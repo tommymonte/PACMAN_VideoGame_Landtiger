@@ -12,6 +12,7 @@
 #include "timer.h"
 #include "../GLCD/GLCD.h" 
 #include "../TouchPanel/TouchPanel.h"
+#include "../joystick/joystick.h"
 #include <stdio.h> /*for sprintf*/
 
 /******************************************************************************
@@ -24,41 +25,28 @@
 **
 ******************************************************************************/
 
+
 void TIMER0_IRQHandler (void)
 {
-	static int clear = 0;
-	char time_in_char[5] = "";
-	int mosse[6][2]={{1,1},{-1,-1},{1,0},{-1,0},{0,1},{0,-1}};
-	int i=0;
+    static int cnt = 60;               // Mantiene lo stato tra chiamate
+    char buffer[10];                   // Buffer per il testo da stampare
 	
-  if(getDisplayPoint(&display, Read_Ads7846(), &matrix )){
-		if(display.y < 280){
-			for(i=0;i<6;i++)
-				TP_DrawPoint(display.x+mosse[i][0],display.y+mosse[i][1]);
-			TP_DrawPoint(display.x,display.y);
-			GUI_Text(200, 0, (uint8_t *) "     ", Blue, Blue);
-			clear = 0;
-		}
-		else{			
-			if(display.y <= 0x13E){			
-				clear++;
-				if(clear%20 == 0){
-					sprintf(time_in_char,"%4d",clear/20);
-					GUI_Text(200, 0, (uint8_t *) time_in_char, White, Blue);
-					if(clear == 200){	/* 1 seconds = 200 times * 500 us*/
-						LCD_Clear(Black);
-						GUI_Text(0, 280, (uint8_t *) " touch here : 1 sec to clear ", Blue, White);			
-						clear = 0;
-					}
-				}
-			}
-		}
-	}
-	else{
-		//do nothing if touch returns values out of bounds
-	}
-  LPC_TIM0->IR = 1;			/* clear interrupt flag */
-  return;
+    // Aggiorna il display con il valore del contatore
+    sprintf(buffer, "Time: %d", cnt);
+    GUI_Text(0, 0, (uint8_t*)buffer, Red, Black);
+    
+		// Verifica se l'interruzione è causata dal Timer 0
+    if (LPC_TIM0->IR & 1) {
+        // Decrementa il contatore o lo resetta
+        if (cnt == 0) {
+            cnt = 60;
+        } else {
+            cnt--;
+        }
+    }
+    // Ripulisce il flag di interruzione del Timer 0
+    LPC_TIM0->IR = 1;
+    return;
 }
 
 
@@ -71,10 +59,47 @@ void TIMER0_IRQHandler (void)
 ** Returned value:		None
 **
 ******************************************************************************/
+typedef struct {
+    int x; // Posizione X
+    int y; // Posizione Y
+} PacMan;
+PacMan pacman = {0, 150}; // Posizione iniziale di Pac-Ma
+
+volatile int pacman_direction = 0; // Direzione di Pac-Man
+// Funzione per disegnare un quadrato 5x5 usando linee
+
+void drawSquares(int x, int y, uint16_t color) {
+    // Disegna le 4 linee del quadrato
+    LCD_DrawLine(x, y, x + 14, y, color);       // Linea superiore (orizzontale)
+    LCD_DrawLine(x, y, x, y + 14, color);       // Linea sinistra (verticale)
+    LCD_DrawLine(x, y + 14, x + 14, y + 14, color); // Linea inferiore (orizzontale)
+    LCD_DrawLine(x + 14, y, x + 14, y + 14, color); // Linea destra (verticale)
+}
+
+void update_direction(void) {
+    int direction = joystick_read(); // Funzione che legge il joystick
+    if (direction != 0) {
+        pacman_direction = direction; // Salva la direzione corrente
+    }
+}
+
 void TIMER1_IRQHandler (void)
 {
-  LPC_TIM1->IR = 1;			/* clear interrupt flag */
-  return;
+	if(LPC_TIM1->IR & 1){
+		drawSquares(pacman.x, pacman.y, Black);
+	 // Aggiorna la posizione di Pac-Man in base alla direzione
+    switch (pacman_direction) {
+        case 1: pacman.y--; break; // Su
+        case 2: pacman.y++; break; // Giù
+        case 3: pacman.x--; break; // Sinistra
+        case 4: pacman.x++; break; // Destra
+        default: break; // Nessun movimento
+    }
+
+    // Aggiorna il display
+    drawSquares(pacman.x, pacman.y, Yellow);
+	}
+    LPC_TIM1->IR = 1; // Resetta il flag dell'interruzione
 }
 
 /******************************************************************************
