@@ -13,6 +13,8 @@
 #include "../GLCD/GLCD.h" 
 #include "../TouchPanel/TouchPanel.h"
 #include "../joystick/joystick.h"
+#include "../RIT/RIT.h"
+#include "GLOBALS.h"
 #include <stdio.h> /*for sprintf*/
 
 /******************************************************************************
@@ -59,6 +61,8 @@ void TIMER0_IRQHandler (void)
 ** Returned value:		None
 **
 ******************************************************************************/
+
+
 typedef struct {
     int x; // Posizione X
     int y; // Posizione Y
@@ -76,30 +80,40 @@ void drawSquares(int x, int y, uint16_t color) {
     LCD_DrawLine(x + 14, y, x + 14, y + 14, color); // Linea destra (verticale)
 }
 
-void update_direction(void) {
-    int direction = joystick_read(); // Funzione che legge il joystick
-    if (direction != 0) {
-        pacman_direction = direction; // Salva la direzione corrente
-    }
-}
+
 
 void TIMER1_IRQHandler (void)
 {
-	if(LPC_TIM1->IR & 1){
-		drawSquares(pacman.x, pacman.y, Black);
-	 // Aggiorna la posizione di Pac-Man in base alla direzione
-    switch (pacman_direction) {
-        case 1: pacman.y--; break; // Su
-        case 2: pacman.y++; break; // Giù
-        case 3: pacman.x--; break; // Sinistra
-        case 4: pacman.x++; break; // Destra
-        default: break; // Nessun movimento
-    }
+ if (LPC_TIM1->IR & 1) {  // Verifica interrupt del Timer 1
+        // Cancella la posizione precedente di Pac-Man
+        drawSquares(pacman.x, pacman.y, Black);
 
-    // Aggiorna il display
-    drawSquares(pacman.x, pacman.y, Yellow);
-	}
-    LPC_TIM1->IR = 1; // Resetta il flag dell'interruzione
+        // Aggiorna la posizione di Pac-Man
+        switch (direction) {
+            case UP:
+                pacman.y -= 5;
+                if (pacman.y < 7) pacman.y = 7;  // Limite superiore
+                break;
+            case DOWN:
+                pacman.y += 5;
+                if (pacman.y > 233) pacman.y = 233;  // Limite inferiore
+                break;
+            case SX:
+                pacman.x -= 5;
+                if (pacman.x < 7) pacman.x = 7;  // Limite sinistro
+                break;
+            case DX:
+                pacman.x += 5;
+                if (pacman.x > 313) pacman.x = 313;  // Limite destro
+                break;
+        }
+
+        // Disegna Pac-Man nella nuova posizione
+        drawSquares(pacman.x, pacman.y, Yellow);
+
+        // Cancella il flag di interrupt del Timer
+        LPC_TIM1->IR = 1;
+    }
 }
 
 /******************************************************************************

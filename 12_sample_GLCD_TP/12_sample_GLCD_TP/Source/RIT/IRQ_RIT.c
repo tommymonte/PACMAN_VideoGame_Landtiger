@@ -19,61 +19,61 @@
 ** Returned value:		None
 **
 ******************************************************************************/
+#define UP 1
+#define DOWN 2
+#define DX 3
+#define SX 4
+#define NOP 0
 
-volatile int down=0;
+extern int direction;
 
-void RIT_IRQHandler (void)
-{					
-	static int up=0;
-	static int position=0;	
-	
-	if((LPC_GPIO1->FIOPIN & (1<<29)) == 0){	
-		/* Joytick UP pressed */
-		up++;
-		switch(up){
-			case 1:
-				break;
-			case 60:	//3sec = 3000ms/50ms = 60
-				break;
-			default:
-				break;
-		}
-	}
-	else{
-			up=0;
-	}
-	
-	/* button management */
-	if(down>=1){ 
-		if((LPC_GPIO2->FIOPIN & (1<<11)) == 0){	/* KEY1 pressed */
-			switch(down){				
-				case 2:				/* pay attention here: please see slides to understand value 2 */
-				if( position == 7){
 
-				}
-				else{
-				
-				}
-					break;
-				default:
-					break;
-			}
-			down++;
-		}
-		else {	/* button released */
-			down=0;			
-			NVIC_EnableIRQ(EINT1_IRQn);							 /* enable Button interrupts			*/
-			LPC_PINCON->PINSEL4    |= (1 << 22);     /* External interrupt 0 pin selection */
-		}
-	}
-/*	else{
-			if(down==1)
-				down++;
-	} */
-	
-  LPC_RIT->RICTRL |= 0x1;	/* clear interrupt flag */
-	
-  return;
+void RIT_IRQHandler (void) {
+		
+    static int up = 0, down = 0, sx = 0, dx = 0;
+
+    // Controllo joystick UP
+    if ((LPC_GPIO1->FIOPIN & (1 << 29)) == 0) {	
+        up++;
+        if (up == 1) {  // Solo al primo rilevamento
+            direction = UP;  // Aggiorna la direzione
+        }
+    } else {
+        up = 0;  // Resetta il contatore
+    }
+
+    // Controllo joystick DOWN
+    if ((LPC_GPIO1->FIOPIN & (1 << 26)) == 0) {	
+        down++;
+        if (down == 1) {  // Solo al primo rilevamento
+            direction = DOWN;
+        }
+    } else {
+        down = 0;
+    }
+
+    // Controllo joystick LEFT
+    if ((LPC_GPIO1->FIOPIN & (1 << 27)) == 0) {	
+        sx++;
+        if (sx == 1) {  // Solo al primo rilevamento
+            direction = SX;
+        }
+    } else {
+        sx = 0;
+    }
+
+    // Controllo joystick RIGHT
+    if ((LPC_GPIO1->FIOPIN & (1 << 28)) == 0) {	
+        dx++;
+        if (dx == 1) {  // Solo al primo rilevamento
+            direction = DX;
+        }
+    } else {
+        dx = 0;
+    }
+
+    // Cancella il flag di interrupt
+    LPC_RIT->RICTRL |= 0x1;
 }
 
 /******************************************************************************

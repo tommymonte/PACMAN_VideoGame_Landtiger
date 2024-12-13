@@ -13,6 +13,8 @@
 #include "timer/timer.h"
 #include "GameFeatures/matrixGame.h"
 #include "joystick/joystick.h"
+#include "RIT/RIT.h"
+#include "GLOBALS.h"
 
 #ifdef SIMULATOR
 extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emulator to find the symbol (can be placed also inside system_LPC17xx.h but since it is RO, it needs more work)
@@ -46,12 +48,18 @@ void drawScreenFromMatrix(int screen[64][48]) {
     }
 }
 
+int direction  = NOP; // default
+
 int main(void)
 {
   SystemInit();  												/* System Initialization (i.e., PLL)  */
-  LCD_Initialization();
+  init_RIT(0x4C4B40);
+	enable_RIT();
+	LCD_Initialization();
 	joystick_init();
 	LCD_Clear(Black);
+	
+
 	drawScreenFromMatrix(screen);
 	//init_timer(0, 0x1312D0 ); 						/* 50ms * 25MHz = 1.25*10^6 = GUI_Text(0, 0, (uint8_t*)buffer, Red, Black); */
 	//init_timer(0, 0x6108 ); 						  /* 1ms * 25MHz = 25*10^3 = 0x6108 */
