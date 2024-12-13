@@ -2,6 +2,6 @@
 #define MATRIX_H
 
 // Dichiarazione della matrice
-extern int screen[64][48];
+extern int screen[32][24];
 
 #endif // MATRIX_H
