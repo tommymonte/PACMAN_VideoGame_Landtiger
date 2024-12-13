@@ -67,26 +67,17 @@ typedef struct {
     int x; // Posizione X
     int y; // Posizione Y
 } PacMan;
-PacMan pacman = {0, 150}; // Posizione iniziale di Pac-Ma
+PacMan pacman = {0, 16}; // Posizione iniziale di Pac-Ma
 
 volatile int pacman_direction = 0; // Direzione di Pac-Man
 // Funzione per disegnare un quadrato 5x5 usando linee
-
-void drawSquares(int x, int y, uint16_t color) {
-    // Disegna le 4 linee del quadrato
-    LCD_DrawLine(x, y, x + 14, y, color);       // Linea superiore (orizzontale)
-    LCD_DrawLine(x, y, x, y + 14, color);       // Linea sinistra (verticale)
-    LCD_DrawLine(x, y + 14, x + 14, y + 14, color); // Linea inferiore (orizzontale)
-    LCD_DrawLine(x + 14, y, x + 14, y + 14, color); // Linea destra (verticale)
-}
-
 
 
 void TIMER1_IRQHandler (void)
 {
  if (LPC_TIM1->IR & 1) {  // Verifica interrupt del Timer 1
         // Cancella la posizione precedente di Pac-Man
-        drawSquares(pacman.x, pacman.y, Black);
+        drawPacmanAt(pacman.x, pacman.y, pacMan, Black);
 
         // Aggiorna la posizione di Pac-Man
         switch (direction) {
@@ -109,7 +100,7 @@ void TIMER1_IRQHandler (void)
         }
 
         // Disegna Pac-Man nella nuova posizione
-        drawSquares(pacman.x, pacman.y, Yellow);
+        drawPacmanAt(pacman.x, pacman.y, pacMan, Yellow);
 
         // Cancella il flag di interrupt del Timer
         LPC_TIM1->IR = 1;

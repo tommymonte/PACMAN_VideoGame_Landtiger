@@ -20,35 +20,8 @@
 extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emulator to find the symbol (can be placed also inside system_LPC17xx.h but since it is RO, it needs more work)
 #endif
 
-// Funzione per disegnare un quadrato 5x5 usando linee
-// Funzione per disegnare un quadrato pieno 5x5 usando linee orizzontali
-void drawSquare(int x, int y) {
-	int i = 0;
-    int size = 10; // Larghezza e altezza del quadrato
-    for (i = 0; i < size; i++) {
-        LCD_DrawLine(x, y + i, x + size - 1, y + i, Blue); // Disegna 5 linee orizzontali
-    }
-}
-// Funzione per disegnare la matrice sullo schermo LCD
-void drawScreenFromMatrix(int screen[32][24]) {
-    int pixelSize = 10; // Ogni bit corrisponde a un quadrato 5x5 pixel
-		int i = 0;
-		int j = 0;
-	
-    // Ciclo su tutta la matrice
-    for (i = 0; i < 32; i++) {
-        for (j = 0; j < 24; j++) {
-            // Se il bit nella matrice è 1, disegna un quadrato 5x5
-            if (screen[i][j] == 1) {
-                int x = j * pixelSize;  // Calcola la posizione X (in pixel) per la colonna
-                int y = i * pixelSize;  // Calcola la posizione Y (in pixel) per la riga
-                drawSquare(x, y);       // Disegna il quadrato sullo schermo
-            }
-        }
-    }
-}
-
 int direction  = NOP; // default
+
 
 int main(void)
 {
