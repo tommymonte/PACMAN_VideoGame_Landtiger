@@ -26,7 +26,7 @@ PacMan pacman = {0, 16}; // Posizione iniziale di Pac-Ma
 int main(void)
 {
   SystemInit();  												/* System Initialization (i.e., PLL)  */
-  init_RIT(0x4C4B40);
+  init_RIT(0x004C4B40);
 	enable_RIT();
 	LCD_Initialization();
 	joystick_init();
@@ -36,7 +36,7 @@ int main(void)
 	drawScreenFromMatrix(screen);
 	//init_timer(0, 0x1312D0 ); 						/* 50ms * 25MHz = 1.25*10^6 = GUI_Text(0, 0, (uint8_t*)buffer, Red, Black); */
 	//init_timer(0, 0x6108 ); 						  /* 1ms * 25MHz = 25*10^3 = 0x6108 */
-	init_timer(1, 0x4E2 ); 						    /* 500us * 25MHz = 1.25*10^3 = 0x4E2 */
+	init_timer(1, 0x001C4B40); 						    /* 500us * 25MHz = 1.25*10^3 = 0x4E2 */
 	init_timer(0, 0x1312D0 ); 						    /* 8us * 25MHz = 200 ~= 0xC8 */
 	
 	enable_timer(0);
