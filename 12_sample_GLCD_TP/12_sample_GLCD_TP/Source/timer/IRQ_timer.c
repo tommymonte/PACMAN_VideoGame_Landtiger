@@ -37,7 +37,7 @@ void TIMER0_IRQHandler (void)
     sprintf(buffer, "Time: %d", cnt);
     GUI_Text(0, 0, (uint8_t*)buffer, Red, Black);
     
-		// Verifica se l'interruzione è causata dal Timer 0
+		// Verifica se l'interruzione ï¿½ causata dal Timer 0
     if (LPC_TIM0->IR & 1) {
         // Decrementa il contatore o lo resetta
         if (cnt == 0) {
@@ -63,49 +63,44 @@ void TIMER0_IRQHandler (void)
 ******************************************************************************/
 
 
-typedef struct {
-    int x; // Posizione X
-    int y; // Posizione Y
-} PacMan;
-PacMan pacman = {0, 16}; // Posizione iniziale di Pac-Ma
+
 
 volatile int pacman_direction = 0; // Direzione di Pac-Man
 // Funzione per disegnare un quadrato 5x5 usando linee
 
 
-void TIMER1_IRQHandler (void)
-{
- if (LPC_TIM1->IR & 1) {  // Verifica interrupt del Timer 1
-        // Cancella la posizione precedente di Pac-Man
-        drawPacmanAt(pacman.x, pacman.y, pacMan, Black);
-
-        // Aggiorna la posizione di Pac-Man
+void TIMER1_IRQHandler(void) {
+    if (LPC_TIM1->IR & 1) {  // Verifica dell'interrupt
+        // Aggiorna la posizione di Pac-Man in base alla direzione	
+				drawPacman();
         switch (direction) {
             case UP:
-                pacman.y -= 5;
-                if (pacman.y < 7) pacman.y = 7;  // Limite superiore
+                if (pacman.y > 0 && screen[pacman.y - 1][pacman.x] == 0) {
+                    pacman.y--;
+                }
                 break;
             case DOWN:
-                pacman.y += 5;
-                if (pacman.y > 233) pacman.y = 233;  // Limite inferiore
-                break;
-            case SX:
-                pacman.x -= 5;
-                if (pacman.x < 7) pacman.x = 7;  // Limite sinistro
+                if (pacman.y < 24 && screen[pacman.y + 1][pacman.x] == 0) {
+                    pacman.y++;
+                }
                 break;
             case DX:
-                pacman.x += 5;
-                if (pacman.x > 313) pacman.x = 313;  // Limite destro
+                if (pacman.x > 0 && screen[pacman.y][pacman.x - 1] == 0) {
+                    pacman.x--;
+                }
+                break;
+            case SX:
+                if (pacman.x < 23 && screen[pacman.y][pacman.x + 1] == 0) {
+                    pacman.x++;
+                }
                 break;
         }
 
-        // Disegna Pac-Man nella nuova posizione
-        drawPacmanAt(pacman.x, pacman.y, pacMan, Yellow);
-
-        // Cancella il flag di interrupt del Timer
+        // Cancella il flag di interruzione del Timer
         LPC_TIM1->IR = 1;
     }
 }
+
 
 /******************************************************************************
 **                            End Of File

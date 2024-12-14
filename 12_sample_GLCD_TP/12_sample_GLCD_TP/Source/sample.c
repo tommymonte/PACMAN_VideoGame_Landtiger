@@ -22,7 +22,7 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 
 int direction  = NOP; // default
 
-
+PacMan pacman = {0, 16}; // Posizione iniziale di Pac-Ma
 int main(void)
 {
   SystemInit();  												/* System Initialization (i.e., PLL)  */

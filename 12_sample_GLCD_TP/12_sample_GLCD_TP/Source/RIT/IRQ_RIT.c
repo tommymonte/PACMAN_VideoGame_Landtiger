@@ -27,55 +27,52 @@
 
 extern int direction;
 
-
 void RIT_IRQHandler (void) {
-		
     static int up = 0, down = 0, sx = 0, dx = 0;
-
     // Controllo joystick UP
     if ((LPC_GPIO1->FIOPIN & (1 << 29)) == 0) {	
         up++;
         if (up == 1) {  // Solo al primo rilevamento
             direction = UP;  // Aggiorna la direzione
         }
-    } else {
-        up = 0;  // Resetta il contatore
-    }
-
+				down = 0;
+				sx = 0;
+				dx = 0;
+    } 
     // Controllo joystick DOWN
     if ((LPC_GPIO1->FIOPIN & (1 << 26)) == 0) {	
         down++;
         if (down == 1) {  // Solo al primo rilevamento
             direction = DOWN;
         }
-    } else {
-        down = 0;
+				up = 0;
+				sx = 0;
+				dx = 0;
     }
-
     // Controllo joystick LEFT
     if ((LPC_GPIO1->FIOPIN & (1 << 27)) == 0) {	
         sx++;
         if (sx == 1) {  // Solo al primo rilevamento
             direction = SX;
         }
-    } else {
-        sx = 0;
-    }
-
+				dx = 0;
+				up = 0;
+				down = 0;
+    } 
     // Controllo joystick RIGHT
     if ((LPC_GPIO1->FIOPIN & (1 << 28)) == 0) {	
         dx++;
         if (dx == 1) {  // Solo al primo rilevamento
             direction = DX;
         }
-    } else {
-        dx = 0;
+				sx = 0;
+				up = 0;
+				down = 0;
     }
 
     // Cancella il flag di interrupt
     LPC_RIT->RICTRL |= 0x1;
 }
-
 /******************************************************************************
 **                            End Of File
 ******************************************************************************/

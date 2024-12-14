@@ -25,6 +25,15 @@ extern void drawSquare(int x, int y, uint16_t color);
 extern void drawScreenFromMatrix(int screen[32][24]);
 extern void drawIcon(int x, int y, int pacMan[10][10], uint16_t color);
 extern void drawPacmanAt(int screenX, int screenY, int pacMan[10][10], uint16_t color);
+extern void drawPacman(void);
 
+// Definizione della struttura per Pac-Man
+typedef struct {
+    int x;  // Posizione X nella matrice screen
+    int y;  // Posizione Y nella matrice screen
+} PacMan;
+
+// Dichiarazione della variabile globale Pac-Man
+extern PacMan pacman;
 
 #endif

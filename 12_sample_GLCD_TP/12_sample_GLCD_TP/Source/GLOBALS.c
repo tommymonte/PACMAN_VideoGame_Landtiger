@@ -42,3 +42,18 @@ void drawPacmanAt(int screenX, int screenY, int pacMan[10][10], uint16_t color) 
     int displayY = screenY * 10;
     drawIcon(displayX, displayY, pacMan, color);
 }
+
+// Funzione per disegnare Pac-Man
+void drawPacman(void) {
+    static int last_x = 0, last_y = 0;  // Posizione precedente di Pac-Man
+
+    // Cancella la posizione precedente di Pac-Man
+    drawPacmanAt(last_x, last_y, pacMan, Black);
+
+    // Disegna Pac-Man nella nuova posizione
+    drawPacmanAt(pacman.x, pacman.y, pacMan, Yellow);
+
+    // Aggiorna la posizione precedente
+    last_x = pacman.x;
+    last_y = pacman.y;
+}
