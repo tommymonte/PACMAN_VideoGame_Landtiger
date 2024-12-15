@@ -34,6 +34,7 @@ int main(void)
 
 	enable_RIT();
 	drawScreenFromMatrix(screen);
+	//distributePills();
 	//init_timer(0, 0x1312D0 ); 						/* 50ms * 25MHz = 1.25*10^6 = GUI_Text(0, 0, (uint8_t*)buffer, Red, Black); */
 	//init_timer(0, 0x6108 ); 						  /* 1ms * 25MHz = 25*10^3 = 0x6108 */
 	init_timer(1, 0x1312D0); 						    /* 500us * 25MHz = 1.25*10^3 = 0x4E2 */

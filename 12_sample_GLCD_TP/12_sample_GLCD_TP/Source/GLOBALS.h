@@ -26,6 +26,8 @@ extern void drawScreenFromMatrix(int screen[32][24]);
 extern void drawIcon(int x, int y, int pacMan[10][10], uint16_t color);
 extern void drawPacmanAt(int screenX, int screenY, int pacMan[10][10], uint16_t color);
 extern void drawPacman(void);
+extern void drawPill(void);
+extern void dristibutrPills(void);
 
 // Definizione della struttura per Pac-Man
 typedef struct {
