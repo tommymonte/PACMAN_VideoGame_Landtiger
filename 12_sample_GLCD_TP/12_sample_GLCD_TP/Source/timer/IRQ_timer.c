@@ -72,7 +72,6 @@ volatile int pacman_direction = 0; // Direzione di Pac-Man
 void TIMER1_IRQHandler(void) {
     if (LPC_TIM1->IR & 1) {  // Verifica dell'interrupt
         // Aggiorna la posizione di Pac-Man in base alla direzione	
-				drawPacman();
         switch (direction) {
             case UP:
                 if (pacman.y > 0 && screen[pacman.y - 1][pacman.x] == 0) {
@@ -95,12 +94,21 @@ void TIMER1_IRQHandler(void) {
                 }
                 break;
         }
-
+				drawPacman();
         // Cancella il flag di interruzione del Timer
         LPC_TIM1->IR = 1;
     }
 }
 
+/*
+void TIMER2_IRQHandler(void) {
+	 if (LPC_TIM2->IR & 1) {  // Verifica dell'interrupt
+			LPC_TIM2->IR = 1;
+		 drawPacman();
+		 
+	 }
+}
+*/
 
 /******************************************************************************
 **                            End Of File
