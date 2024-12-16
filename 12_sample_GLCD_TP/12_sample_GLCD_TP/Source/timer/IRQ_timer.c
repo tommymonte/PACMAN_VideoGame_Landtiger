@@ -94,23 +94,27 @@ void TIMER1_IRQHandler(void) {
                 break;
             case DOWN:
                 if (pacman.y < 24 && (screen[pacman.y + 1][pacman.x] == 0 || screen[pacman.y + 1][pacman.x] == 2 || screen[pacman.y + 1][pacman.x] == 3)) {
-                prevPacman = currentPacman;	
-					currentPacman = pacMan_down;    
-								pacman.y++;
+                    prevPacman = currentPacman;	
+					          currentPacman = pacMan_down;    
+								    pacman.y++;
                 }
                 break;
             case SX:
                 if (pacman.x > 0 && (screen[pacman.y][pacman.x - 1] == 0 || screen[pacman.y][pacman.x - 1] == 2 || screen[pacman.y][pacman.x - 1] == 3)) {
-                prevPacman = currentPacman;	
-					currentPacman = pacMan_sx;    
-								pacman.x--;
+                    prevPacman = currentPacman;	
+					          currentPacman = pacMan_sx;    
+								    pacman.x--;
+                } else if (pacman.x == 0 && pacman.y == 16) {
+                    pacman.x = 23;
                 }
                 break;
             case DX:
                 if (pacman.x < 23 && (screen[pacman.y][pacman.x + 1] == 0  || screen[pacman.y][pacman.x + 1] == 2 || screen[pacman.y][pacman.x + 1] == 3)) {
-                prevPacman = currentPacman;	
-					currentPacman = pacMan;    
-								pacman.x++;
+                    prevPacman = currentPacman;	
+					          currentPacman = pacMan;    
+								    pacman.x++;
+                } else if (pacman.x = 23 && pacman.y ==16) {
+                  pacman.x = 0;
                 }
                 break;
         }
