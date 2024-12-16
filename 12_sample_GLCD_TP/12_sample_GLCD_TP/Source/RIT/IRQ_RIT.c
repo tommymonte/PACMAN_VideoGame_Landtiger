@@ -9,6 +9,7 @@
 *********************************************************************************************************/
 #include "LPC17xx.h"
 #include "RIT.h"
+#include "GLOBALS.h"
 
 /******************************************************************************
 ** Function name:		RIT_IRQHandler
@@ -19,11 +20,7 @@
 ** Returned value:		None
 **
 ******************************************************************************/
-#define UP 1
-#define DOWN 2
-#define DX 3
-#define SX 4
-#define NOP 0
+
 
 extern int direction;
 
@@ -34,6 +31,7 @@ void RIT_IRQHandler (void) {
         up++;
         if (up == 1) {  // Solo al primo rilevamento
             direction = UP;  // Aggiorna la direzione
+						//currentPacman = pacMan_up;
         }
 				down = 0;
 				sx = 0;
@@ -44,6 +42,7 @@ void RIT_IRQHandler (void) {
         down++;
         if (down == 1) {  // Solo al primo rilevamento
             direction = DOWN;
+					//currentPacman = pacMan_down;
         }
 				up = 0;
 				sx = 0;
@@ -54,6 +53,7 @@ void RIT_IRQHandler (void) {
         sx++;
         if (sx == 1) {  // Solo al primo rilevamento
             direction = SX;
+						//currentPacman = pacMan;
         }
 				dx = 0;
 				up = 0;
@@ -64,6 +64,7 @@ void RIT_IRQHandler (void) {
         dx++;
         if (dx == 1) {  // Solo al primo rilevamento
             direction = DX;
+						//currentPacman = pacMan_sx;
         }
 				sx = 0;
 				up = 0;

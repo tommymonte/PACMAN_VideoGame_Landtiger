@@ -10,26 +10,34 @@ void drawSquare(int x, int y, uint16_t color) {
 }
 
 // Funzione per disegnare la matrice sullo schermo LCD
-void drawScreenFromMatrix(int screen[32][24]) {
-    int pixelSize = 10; // Ogni bit corrisponde a un quadrato 5x5 pixel
-		int i = 0;
-		int j = 0;
-	
+// Funzione per disegnare la matrice sullo schermo LCD
+void drawScreenFromMatrix(int screen[32][24], int pill[10][10], int powerPill[10][10]) {
+    int pixelSize = 10; // Ogni cella corrisponde a un quadrato di 10x10 pixel
+
     // Ciclo su tutta la matrice
-    for (i = 0; i < 32; i++) {
-        for (j = 0; j < 24; j++) {
+    for (int i = 0; i < 32; i++) {
+        for (int j = 0; j < 24; j++) {
             int x = j * pixelSize;  // Calcola la posizione X (in pixel) per la colonna
             int y = i * pixelSize;  // Calcola la posizione Y (in pixel) per la riga
-            if (screen[i][j] == 1) {
-                drawSquare(x, y, Blue);       // Disegna il quadrato sullo schermo
-            } /*else if (screen[i][j] == 2) {
-								drawPillAt(x, y, pill, Magenta);
-						} else if (screen[i][j] == 3) {
-								drawPowerPill(x, y, powerPill, Green); 
-								} */
+
+            // Disegna in base al valore della cella
+            switch (screen[i][j]) {
+                case 1:
+                    drawSquare(x, y, Blue);           // Disegna muro
+                    break;
+                case 2:
+										drawIcon(x, y, pill, Magenta);    
+                    break;
+                case 3:
+                    drawIcon(x, y, powerPill, Magenta);
+                    break;
+                default:
+                    break;  // Celle vuote (valore 0), non disegnare nulla
+            }
         }
     }
 }
+
 void drawIcon(int x, int y, int icon[10][10], uint16_t color) {
     for (int i = 0; i < 10; i++) {  // Itera su ogni riga della matrice 10x10
         for (int j = 0; j < 10; j++) {
@@ -52,7 +60,7 @@ void drawPacman(void) {
 
     // Cancella la posizione precedente di Pac-Man
     drawPacmanAt(last_x, last_y, pacMan, Black);
-
+		//drawSquare(last_x, last_y, Black);
     // Disegna Pac-Man nella nuova posizione
     drawPacmanAt(pacman.x, pacman.y, pacMan, Yellow);
 
@@ -61,30 +69,7 @@ void drawPacman(void) {
     last_y = pacman.y;
 }
 
-void drawPillAt(int screenX, int screenY, int pill[10][10], uint16_t color) {
-    int displayX = screenX * 10;  // Converti la cella logica in coordinate fisiche
-    int displayY = screenY * 10;
-    drawIcon(displayX, displayY, pill, color);
-}
-
-void drawPowerPillAt(int screenX, int screenY, int powerPill[10][10], uint16_t color) {
-    int displayX = screenX * 10;  // Converti la cella logica in coordinate fisiche
-    int displayY = screenY * 10;
-    drawIcon(displayX, displayY, powerPill, color);
-}
-
-void distributePills(void) {
-    for (int i = 0; i < 32; i++) {
-        for (int j = 0; j < 24; j++) {
-            if (screen[i][j] == 2) {
-                drawPillAt(i, j, pill, Magenta);  // Disegna una pillola normale
-            } else if (screen[i][j] == 3) {
-                drawPowerPillAt(i, j, powerPill, Green);  // Disegna una pillola speciale (vita)
-            }
-        }
-    }
-}
 
 void initGame(void) {
-    distributePills();     // Disegna tutte le pills sulla mappa
+
 }

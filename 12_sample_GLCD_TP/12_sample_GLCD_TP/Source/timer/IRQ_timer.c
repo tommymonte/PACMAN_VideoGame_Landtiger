@@ -71,6 +71,18 @@ volatile int pacman_direction = 0; // Direzione di Pac-Man
 
 void TIMER1_IRQHandler(void) {
     if (LPC_TIM1->IR & 1) {  // Verifica dell'interrupt
+			                     // Controllo per la raccolta delle pills
+				if (screen[pacman.y][pacman.x] == 2) {  
+                        screen[pacman.y][pacman.x] = 0;  // Aggiorna la matrice
+												drawIcon(pacman.x *10, pacman.y * 10, pill, Black);
+                       // score += 10; // Aumenta il punteggio
+        } else if (screen[pacman.y][pacman.x] == 3) {  
+                        // Pac-Man raccoglie una pill speciale
+                        screen[pacman.y][pacman.x] = 0;  // Aggiorna la matrice
+												drawIcon(pacman.x*10, pacman.y*10, powerPill, Black);
+                       // score += 50; // Aumenta il punteggio speciale
+                       // lives++;     // Aumenta le vite di Pac-Man
+        }
         // Aggiorna la posizione di Pac-Man in base alla direzione	
         switch (direction) {
             case UP:
@@ -83,30 +95,18 @@ void TIMER1_IRQHandler(void) {
                     pacman.y++;
                 }
                 break;
-            case DX:
+            case SX:
                 if (pacman.x > 0 && (screen[pacman.y][pacman.x - 1] == 0 || screen[pacman.y][pacman.x - 1] == 2 || screen[pacman.y][pacman.x - 1] == 3)) {
                     pacman.x--;
                 }
                 break;
-            case SX:
+            case DX:
                 if (pacman.x < 23 && (screen[pacman.y][pacman.x + 1] == 0  || screen[pacman.y][pacman.x + 1] == 2 || screen[pacman.y][pacman.x + 1] == 3)) {
                     pacman.x++;
                 }
                 break;
         }
-                     // Controllo per la raccolta delle pills
-                    if (screen[pacman.y][pacman.x] == 2) {  
-                        // Pac-Man raccoglie una pill
-                        screen[pacman.y][pacman.x] = 0;  // Aggiorna la matrice
-                        drawPillAt(pacman.x, pacman.y, Black); // Cancella la pill
-                       // score += 10; // Aumenta il punteggio
-                    } else if (screen[pacman.y][pacman.x] == 3) {  
-                        // Pac-Man raccoglie una pill speciale
-                        screen[pacman.y][pacman.x] = 0;  // Aggiorna la matrice
-                        drawPowerPillAt(pacman.x, pacman.y, Black); // Cancella la pill speciale
-                       // score += 50; // Aumenta il punteggio speciale
-                       // lives++;     // Aumenta le vite di Pac-Man
-                    }
+
 				drawPacman();
         // Cancella il flag di interruzione del Timer
         LPC_TIM1->IR = 1;
