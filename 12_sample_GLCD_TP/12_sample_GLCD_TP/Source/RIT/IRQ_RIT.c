@@ -31,7 +31,7 @@ void RIT_IRQHandler (void) {
         up++;
         if (up == 1) {  // Solo al primo rilevamento
             direction = UP;  // Aggiorna la direzione
-						//currentPacman = pacMan_up;
+						
         }
 				down = 0;
 				sx = 0;
@@ -42,7 +42,6 @@ void RIT_IRQHandler (void) {
         down++;
         if (down == 1) {  // Solo al primo rilevamento
             direction = DOWN;
-					//currentPacman = pacMan_down;
         }
 				up = 0;
 				sx = 0;
@@ -53,7 +52,6 @@ void RIT_IRQHandler (void) {
         sx++;
         if (sx == 1) {  // Solo al primo rilevamento
             direction = SX;
-						//currentPacman = pacMan;
         }
 				dx = 0;
 				up = 0;
@@ -64,7 +62,6 @@ void RIT_IRQHandler (void) {
         dx++;
         if (dx == 1) {  // Solo al primo rilevamento
             direction = DX;
-						//currentPacman = pacMan_sx;
         }
 				sx = 0;
 				up = 0;

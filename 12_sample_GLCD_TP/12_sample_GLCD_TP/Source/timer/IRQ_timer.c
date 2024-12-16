@@ -87,22 +87,30 @@ void TIMER1_IRQHandler(void) {
         switch (direction) {
             case UP:
                 if (pacman.y > 0 && (screen[pacman.y - 1][pacman.x] == 0 || screen[pacman.y - 1][pacman.x] == 2 || screen[pacman.y - 1][pacman.x] == 3)) {
+										prevPacman = currentPacman;	
+										currentPacman = pacMan_up;
                     pacman.y--;
                 }
                 break;
             case DOWN:
                 if (pacman.y < 24 && (screen[pacman.y + 1][pacman.x] == 0 || screen[pacman.y + 1][pacman.x] == 2 || screen[pacman.y + 1][pacman.x] == 3)) {
-                    pacman.y++;
+                prevPacman = currentPacman;	
+					currentPacman = pacMan_down;    
+								pacman.y++;
                 }
                 break;
             case SX:
                 if (pacman.x > 0 && (screen[pacman.y][pacman.x - 1] == 0 || screen[pacman.y][pacman.x - 1] == 2 || screen[pacman.y][pacman.x - 1] == 3)) {
-                    pacman.x--;
+                prevPacman = currentPacman;	
+					currentPacman = pacMan_sx;    
+								pacman.x--;
                 }
                 break;
             case DX:
                 if (pacman.x < 23 && (screen[pacman.y][pacman.x + 1] == 0  || screen[pacman.y][pacman.x + 1] == 2 || screen[pacman.y][pacman.x + 1] == 3)) {
-                    pacman.x++;
+                prevPacman = currentPacman;	
+					currentPacman = pacMan;    
+								pacman.x++;
                 }
                 break;
         }

@@ -59,10 +59,10 @@ void drawPacman(void) {
     static int last_x = 0, last_y = 0;  // Posizione pre edente di Pac-Man
 
     // Cancella la posizione precedente di Pac-Man
-    drawPacmanAt(last_x, last_y, pacMan, Black);
-		//drawSquare(last_x, last_y, Black);
+			drawPacmanAt(last_x, last_y, prevPacman, Black);
     // Disegna Pac-Man nella nuova posizione
-    drawPacmanAt(pacman.x, pacman.y, pacMan, Yellow);
+			drawPacmanAt(pacman.x, pacman.y, currentPacman, Yellow);
+		//drawIcon(pacman.x * 10, pacman.y * 10, currentPacman, Black);
 
     // Aggiorna la posizione precedente
     last_x = pacman.x;

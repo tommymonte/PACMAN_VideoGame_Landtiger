@@ -36,6 +36,7 @@ typedef struct {
     int y;  // Posizione Y nella matrice screen
 } PacMan;
 extern int (*currentPacman)[10];
+extern int (*prevPacman)[10];
 // Dichiarazione della variabile globale Pac-Man
 extern PacMan pacman;
 
