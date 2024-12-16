@@ -25,6 +25,7 @@ int direction  = NOP; // default
 PacMan pacman = {12, 18}; // Posizione iniziale di Pac-Man
 int (*currentPacman)[10] = pacMan; // Inizializzato alla matrice per "destra"
 int (*prevPacman)[10] = pacMan;
+uint8_t lfsr_register = 0x01;
 
 int main(void)
 {
@@ -36,10 +37,11 @@ SystemInit();  												/* System Initialization (i.e., PLL)  */
 	
 	enable_RIT();
 	
+	distributePills(lfsr_register, screen);
 	drawScreenFromMatrix(screen, pill, powerPill);
 	
 	init_timer(1, 0x2625A0); 						    /* 500us * 25MHz = 1.25*10^3 = 0x4E2 */
-	init_timer(0, 0x1312D0 ); 						    /* 8us * 25MHz = 200 ~= 0xC8 */
+	init_timer(0, 0x17D7840 ); 						    /* 8us * 25MHz = 200 ~= 0xC8 */
 
 	enable_timer(0);
 	enable_timer(1);

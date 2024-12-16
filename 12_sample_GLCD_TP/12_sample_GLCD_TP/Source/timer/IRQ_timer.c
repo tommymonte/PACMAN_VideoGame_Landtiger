@@ -27,7 +27,6 @@
 **
 ******************************************************************************/
 
-
 void TIMER0_IRQHandler (void)
 {
     static int cnt = 60;               // Mantiene lo stato tra chiamate
@@ -51,7 +50,6 @@ void TIMER0_IRQHandler (void)
     return;
 }
 
-
 /******************************************************************************
 ** Function name:		Timer1_IRQHandler
 **
@@ -61,9 +59,6 @@ void TIMER0_IRQHandler (void)
 ** Returned value:		None
 **
 ******************************************************************************/
-
-
-
 
 volatile int pacman_direction = 0; // Direzione di Pac-Man
 // Funzione per disegnare un quadrato 5x5 usando linee
@@ -75,13 +70,13 @@ void TIMER1_IRQHandler(void) {
 				if (screen[pacman.y][pacman.x] == 2) {  
                         screen[pacman.y][pacman.x] = 0;  // Aggiorna la matrice
 												drawIcon(pacman.x *10, pacman.y * 10, pill, Black);
-                       // score += 10; // Aumenta il punteggio
+                        //score += 10; // Aumenta il punteggio
         } else if (screen[pacman.y][pacman.x] == 3) {  
                         // Pac-Man raccoglie una pill speciale
                         screen[pacman.y][pacman.x] = 0;  // Aggiorna la matrice
 												drawIcon(pacman.x*10, pacman.y*10, powerPill, Black);
-                       // score += 50; // Aumenta il punteggio speciale
-                       // lives++;     // Aumenta le vite di Pac-Man
+                        //score += 50; // Aumenta il punteggio speciale
+                        //lives++;     // Aumenta le vite di Pac-Man
         }
         // Aggiorna la posizione di Pac-Man in base alla direzione	
         switch (direction) {
@@ -93,7 +88,7 @@ void TIMER1_IRQHandler(void) {
                 }
                 break;
             case DOWN:
-                if (pacman.y < 24 && (screen[pacman.y + 1][pacman.x] == 0 || screen[pacman.y + 1][pacman.x] == 2 || screen[pacman.y + 1][pacman.x] == 3)) {
+                if (pacman.y < 29 && (screen[pacman.y + 1][pacman.x] == 0 || screen[pacman.y + 1][pacman.x] == 2 || screen[pacman.y + 1][pacman.x] == 3)) {
                     prevPacman = currentPacman;	
 					          currentPacman = pacMan_down;    
 								    pacman.y++;
@@ -113,13 +108,14 @@ void TIMER1_IRQHandler(void) {
                     prevPacman = currentPacman;	
 					          currentPacman = pacMan;    
 								    pacman.x++;
-                } else if (pacman.x = 23 && pacman.y ==16) {
+                } else if (pacman.x == 23 && pacman.y == 16) {
                   pacman.x = 0;
                 }
                 break;
         }
-
 				drawPacman();
+				int cnt_pills = countPills(screen);
+				printScore(cnt_pills);
         // Cancella il flag di interruzione del Timer
         LPC_TIM1->IR = 1;
     }

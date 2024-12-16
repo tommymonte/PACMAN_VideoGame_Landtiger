@@ -1,5 +1,5 @@
 #include "GLOBALS.h"
-
+#include <stdio.h>
 // Funzione per disegnare un quadrato pieno 5x5 usando linee orizzontali
 void drawSquare(int x, int y, uint16_t color) {
 	int i = 0;
@@ -69,6 +69,83 @@ void drawPacman(void) {
     last_y = pacman.y;
 }
 
+void distributePills(uint8_t lfsr_register, int screen[32][24]) {
+    int pills = 6;  // Numero di pillole da distribuire
+    int max_attempts = 50;  // Limite massimo di tentativi per evitare loop infiniti
+    int attempts = 0;  // Contatore dei tentativi
+
+    while (pills > 0) {
+        // Genera una riga e una colonna casuali usando LFSR
+        int random_row = (lfsr(lfsr_register) & 0x1F);  // Limita la riga a 0-31
+        lfsr_register = lfsr(lfsr_register);  // Aggiorna l'LFSR
+        int random_col = (lfsr(lfsr_register) & 0x1F);  // Limita la colonna a 0-23
+        lfsr_register = lfsr(lfsr_register);  // Aggiorna l'LFSR
+			
+        // Se il valore in quella posizione è 0, settalo a 2
+        if (screen[random_row][random_col] == 2 && random_row >= 5 && random_row <= 28 && random_col < 23) {
+            screen[random_row][random_col] = 3;
+            pills--;  // Decrementa solo quando viene impostato il valore a 2
+        }
+        attempts++;  // Incrementa il contatore dei tentativi
+    }
+}
+
+// Funzione per generare la sequenza pseudo-casuale usando un LFSR
+uint8_t lfsr(uint8_t lfsr_register) {
+    // Calcola il bit di feedback. In questo caso, stiamo usando il polinomio x^4 + x + 1,
+    // quindi il feedback è dato dal XOR tra il bit 4 (bit 3) e il bit 1 (bit 0)
+    uint8_t feedback = (lfsr_register & 0x01) ^ ((lfsr_register >> 3) & 0x01);
+
+    // Shift del registro a sinistra
+    lfsr_register >>= 1;
+
+    // Aggiungi il bit di feedback al registro
+    if (feedback) {
+        lfsr_register |= 0x80;  // Imposta il bit più significativo
+    }
+
+    return lfsr_register;
+}
+
+// Funzione per contare il numero di 2 nella matrice
+int countPills(int screen[32][24]) {
+    int count = 0;  // Variabile per contare i 2
+    
+    // Scorri tutta la matrice
+    for (int row = 0; row < 32; row++) {
+        for (int col = 0; col < 24; col++) {
+            if (screen[row][col] == 2 || screen[row][col] == 3) {
+                count++;  // Incrementa il contatore se trovi un 2
+            }
+        }
+    }
+
+    return count;  // Restituisce il numero di pillole (2)
+}
+
+// Funzione per contare il numero di 2 nella matrice
+int countPwPills(int screen[32][24]) {
+    int count = 0;  // Variabile per contare i 2
+    
+    // Scorri tutta la matrice
+    for (int row = 0; row < 32; row++) {
+        for (int col = 0; col < 24; col++) {
+            if (screen[row][col] == 2 || screen[row][col] == 3 ) {
+                count++;  // Incrementa il contatore se trovi un 2
+            }
+        }
+    }
+
+    return count;  // Restituisce il numero di pillole (2)
+}
+
+void printScore(countPills){
+    char buffer[10];                   // Buffer per il testo da stampare
+		// Aggiorna il display con il valore del contatore
+    sprintf(buffer, "Pills: %d", countPills);
+    GUI_Text(120, 0, (uint8_t*)buffer, White, Black);
+		
+}
 
 void initGame(void) {
 
