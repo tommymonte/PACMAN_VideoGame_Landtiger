@@ -62,7 +62,7 @@ void TIMER0_IRQHandler (void)
 
 volatile int pacman_direction = 0; // Direzione di Pac-Man
 // Funzione per disegnare un quadrato 5x5 usando linee
-
+int score = 0;
 
 void TIMER1_IRQHandler(void) {
     if (LPC_TIM1->IR & 1) {  // Verifica dell'interrupt
@@ -70,12 +70,12 @@ void TIMER1_IRQHandler(void) {
 				if (screen[pacman.y][pacman.x] == 2) {  
                         screen[pacman.y][pacman.x] = 0;  // Aggiorna la matrice
 												drawIcon(pacman.x *10, pacman.y * 10, pill, Black);
-                        //score += 10; // Aumenta il punteggio
+                        score += 10; // Aumenta il punteggio
         } else if (screen[pacman.y][pacman.x] == 3) {  
                         // Pac-Man raccoglie una pill speciale
                         screen[pacman.y][pacman.x] = 0;  // Aggiorna la matrice
 												drawIcon(pacman.x*10, pacman.y*10, powerPill, Black);
-                        //score += 50; // Aumenta il punteggio speciale
+                        score += 50; // Aumenta il punteggio speciale
                         //lives++;     // Aumenta le vite di Pac-Man
         }
         // Aggiorna la posizione di Pac-Man in base alla direzione	
@@ -114,8 +114,8 @@ void TIMER1_IRQHandler(void) {
                 break;
         }
 				drawPacman();
-				int cnt_pills = countPills(screen);
-				printScore(cnt_pills);
+				// int cnt_pills = countPills(screen);
+				printScore(score);
         // Cancella il flag di interruzione del Timer
         LPC_TIM1->IR = 1;
     }

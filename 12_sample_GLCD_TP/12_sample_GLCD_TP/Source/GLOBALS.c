@@ -140,9 +140,9 @@ int countPwPills(int screen[32][24]) {
 }
 
 void printScore(countPills){
-    char buffer[10];                   // Buffer per il testo da stampare
+    char buffer[30];                   // Buffer per il testo da stampare
 		// Aggiorna il display con il valore del contatore
-    sprintf(buffer, "Pills: %d", countPills);
+    sprintf(buffer, "SCORE: %d", countPills);
     GUI_Text(120, 0, (uint8_t*)buffer, White, Black);
 		
 }
