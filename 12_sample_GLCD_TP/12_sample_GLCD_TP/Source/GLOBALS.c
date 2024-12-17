@@ -140,20 +140,12 @@ int countPwPills(int screen[32][24]) {
 }
 
 void printScore(countPills){
-    char buffer[50];                   // Buffer per il testo da stampare
+    char buffer[30];                   // Buffer per il testo da stampare
 		// Aggiorna il display con il valore del contatore
-    sprintf(buffer, "Pills: %d", countPills);
+    sprintf(buffer, "SCORE: %d", countPills);
     GUI_Text(120, 0, (uint8_t*)buffer, White, Black);
 		
 }
-
-unsigned int seed = 12345; // Seed iniziale
-
-int random(int min, int max) {
-    seed = (seed * 1103515245 + 12345) & 0x7FFFFFFF; // Generatore LCG
-    return (seed % (max - min + 1)) + min;
-}
-
 
 void initGame(void) {
 
