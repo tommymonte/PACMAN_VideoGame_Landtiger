@@ -26,29 +26,30 @@
 ** Returned value:		None
 **
 ******************************************************************************/
+int totalPillsPlaced = 6;   // Contatore globale delle pills posizionate
+extern uint8_t lfsr_register;  // Registro LFSR iniziale
 
-void TIMER0_IRQHandler (void)
-{
-    static int cnt = 60;               // Mantiene lo stato tra chiamate
-    char buffer[10];                   // Buffer per il testo da stampare
-	
+void TIMER0_IRQHandler(void) {
+    static int cnt = 60;                 // Mantiene il conto del tempo di gioco
+
+    char buffer[10];                     // Buffer per il testo da stampare
+
     // Aggiorna il display con il valore del contatore
     sprintf(buffer, "Time: %d", cnt);
     GUI_Text(0, 0, (uint8_t*)buffer, Red, Black);
-    
-		// Verifica se l'interruzione � causata dal Timer 0
-    if (LPC_TIM0->IR & 1) {
-        // Decrementa il contatore o lo resetta
+
+    if (LPC_TIM0->IR & 1) {  // Verifica se l'interruzione è causata dal Timer 0
         if (cnt == 0) {
-            cnt = 60;
+            cnt = 60;  // Resetta il contatore del tempo
         } else {
-            cnt--;
+            cnt--;  // Decrementa il contatore
         }
-    }
+
     // Ripulisce il flag di interruzione del Timer 0
     LPC_TIM0->IR = 1;
     return;
 }
+		}
 
 /******************************************************************************
 ** Function name:		Timer1_IRQHandler
@@ -121,15 +122,40 @@ void TIMER1_IRQHandler(void) {
     }
 }
 
-/*
+/******************************************************************************
+** Function name:		Timer2_IRQHandler
+**
+** Descriptions:		Timer/Counter 2 interrupt handler
+**
+** parameters:			None
+** Returned value:		None
+**
+******************************************************************************/
+
 void TIMER2_IRQHandler(void) {
+	   static int delayCounter = 0;         // Contatore per il ritardo casuale
+    static int randomDelay = 0;          // Valore del ritardo casuale
 	 if (LPC_TIM2->IR & 1) {  // Verifica dell'interrupt
-			LPC_TIM2->IR = 1;
-		 drawPacman();
-		 
+
+	// Se non ho ancora posizionato 6 pills
+        if (totalPillsPlaced < 6) {
+            // Controlla se il ritardo è completato
+            if (delayCounter >= randomDelay) {
+                // Posiziona una pillola
+                distributePills(lfsr_register, screen);
+                totalPillsPlaced++;
+
+                // Genera un nuovo ritardo casuale
+                randomDelay = (lfsr(lfsr_register) & 0x1F) + 10;  // Valore tra 10 e 41
+                delayCounter = 0;  // Resetta il contatore
+            } else {
+                delayCounter++;  // Incrementa il contatore di ritardo
+            }
+        }
+		 			LPC_TIM2->IR = 1;
 	 }
 }
-*/
+
 
 /******************************************************************************
 **                            End Of File

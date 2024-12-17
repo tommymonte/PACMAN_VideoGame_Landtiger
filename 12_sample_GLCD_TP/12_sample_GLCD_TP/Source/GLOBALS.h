@@ -26,6 +26,7 @@ extern int col;
 
 extern int lives;
 extern int score;
+extern int totalPillsPlaced;
 
 /*funzioni di gioco*/
 extern void drawSquare(int x, int y, uint16_t color);

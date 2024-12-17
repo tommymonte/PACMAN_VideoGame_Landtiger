@@ -73,9 +73,12 @@ void distributePills(uint8_t lfsr_register, int screen[32][24]) {
     int pills = 6;  // Numero di pillole da distribuire
     int max_attempts = 50;  // Limite massimo di tentativi per evitare loop infiniti
     int attempts = 0;  // Contatore dei tentativi
+    int rnd_time = (lfsr(lfsr_register) & 0x1F);
+
 
     while (pills > 0) {
-        // Genera una riga e una colonna casuali usando LFSR
+        for (int i = 0; i<rnd_time; i++){
+            // Genera una riga e una colonna casuali usando LFSR
         int random_row = (lfsr(lfsr_register) & 0x1F);  // Limita la riga a 0-31
         lfsr_register = lfsr(lfsr_register);  // Aggiorna l'LFSR
         int random_col = (lfsr(lfsr_register) & 0x1F);  // Limita la colonna a 0-23
@@ -87,7 +90,10 @@ void distributePills(uint8_t lfsr_register, int screen[32][24]) {
             pills--;  // Decrementa solo quando viene impostato il valore a 2
         }
         attempts++;  // Incrementa il contatore dei tentativi
+        }
+
     }
+        
 }
 
 // Funzione per generare la sequenza pseudo-casuale usando un LFSR
