@@ -28,29 +28,41 @@
 ******************************************************************************/
 
 int totalPillsPlaced = 6;   // Contatore globale delle pills posizionate
-extern uint8_t lfsr_register;  // Registro LFSR iniziale
 
 void TIMER0_IRQHandler(void) {
-    static int cnt = 60;                 // Mantiene il conto del tempo di gioco
+    static int cnt = 60;               // Mantiene il conto del tempo di gioco
+    char buffer[10];                   // Buffer per il testo da stampare
 
-    char buffer[10];                     // Buffer per il testo da stampare
+    // Se pausa è attiva, mostra "PAUSE", altrimenti mostra il contatore
+    if (pause == 0) {
+				GUI_Text(0, 0, (uint8_t*)"CCCCCCCCC", Black, Black);  // Visualizza "PAUSE"
+        sprintf(buffer, "PAUSE");
+        GUI_Text(0, 0, (uint8_t*)buffer, Red, Black);  // Visualizza "PAUSE"
+		} else if (pause == 2) {
+				sprintf(buffer, "GAME OVER");
+        GUI_Text(0, 0, (uint8_t*)buffer, Red, Black);  // Visualizza "PAUSE"
+		} else if (pause == 3){
+			sprintf(buffer, "VICTORY!");
+        GUI_Text(0, 0, (uint8_t*)buffer, Green, Black);  // Visualizza "PAUSE"
+		} else {
+        sprintf(buffer, "Time: %d", cnt);
+        GUI_Text(0, 0, (uint8_t*)buffer, Red, Black);  // Visualizza il tempo
+    }
 
-    // Aggiorna il display con il valore del contatore
-    sprintf(buffer, "Time: %d", cnt);
-    GUI_Text(0, 0, (uint8_t*)buffer, Red, Black);
-
-    if (LPC_TIM0->IR & 1) {  // Verifica se l'interruzione è causata dal Timer 0
-        if (cnt == 0) {
-            cnt = 60;  // Resetta il contatore del tempo
-        } else {
-            cnt--;  // Decrementa il contatore
+    if (LPC_TIM0->IR & 1 && pause == 1) {  // Verifica se l'interruzione è causata dal Timer 0
+        if (cnt == 0 && countPills(screen) > 0) {
+							// game over
+							pause = 2;
+				}	else {
+							cnt--;  // Decrementa il contatore
         }
+    }
 
     // Ripulisce il flag di interruzione del Timer 0
     LPC_TIM0->IR = 1;
     return;
 }
-		}
+
 
 /******************************************************************************
 ** Function name:		Timer1_IRQHandler
@@ -65,20 +77,25 @@ void TIMER0_IRQHandler(void) {
 volatile int pacman_direction = 0; // Direzione di Pac-Man
 // Funzione per disegnare un quadrato 5x5 usando linee
 int score = 0;
+int pause = 0;
+int lives = 1;
+int cnt_score = 0;
 
 void TIMER1_IRQHandler(void) {
     if (LPC_TIM1->IR & 1) {  // Verifica dell'interrupt
 			                     // Controllo per la raccolta delle pills
+			if (pause == 1) {
 				if (screen[pacman.y][pacman.x] == 2) {  
                         screen[pacman.y][pacman.x] = 0;  // Aggiorna la matrice
 												drawIcon(pacman.x *10, pacman.y * 10, pill, Black);
                         score += 10; // Aumenta il punteggio
+												cnt_score += 10;
         } else if (screen[pacman.y][pacman.x] == 3) {  
                         // Pac-Man raccoglie una pill speciale
                         screen[pacman.y][pacman.x] = 0;  // Aggiorna la matrice
 												drawIcon(pacman.x*10, pacman.y*10, powerPill, Black);
                         score += 50; // Aumenta il punteggio speciale
-                        //lives++;     // Aumenta le vite di Pac-Man
+												cnt_score += 50;
         }
         // Aggiorna la posizione di Pac-Man in base alla direzione	
         switch (direction) {
@@ -115,10 +132,21 @@ void TIMER1_IRQHandler(void) {
                 }
                 break;
         }
+				
 				drawPacman();
-				// int cnt_pills = countPills(screen);
 				printScore(score);
-        // Cancella il flag di interruzione del Timer
+        if (cnt_score == 1000) {
+					lives++;
+					cnt_score = 0;
+				}
+			} 
+				if (countPills(screen) == 0){
+					pause = 3;
+				}
+				
+				//life(lives);
+				printLife(lives);
+				// Cancella il flag di interruzione del Timer
         LPC_TIM1->IR = 1;
     }
 }
@@ -137,9 +165,8 @@ void TIMER2_IRQHandler(void) {
 	  static int delayCounter = 0;         // Contatore per il ritardo casuale
     static int randomDelay = 5;          // Valore del ritardo casuale
 		static int totalPillsPlaced = 0;
-	 if (LPC_TIM2->IR & 1) {  // Verifica dell'interrupt
-	
-	// Se non ho ancora posizionato 6 pills
+		if ((LPC_TIM2->IR & 1) && pause == 1) {  // Verifica dell'interrupt
+				// Se non ho ancora posizionato 6 pills
         if (totalPillsPlaced < 6) {
 					if (randomDelay == 0){
 						delayCounter = 0;

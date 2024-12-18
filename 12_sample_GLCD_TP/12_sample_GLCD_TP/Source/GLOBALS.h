@@ -27,6 +27,7 @@ extern int col;
 extern int lives;
 extern int score;
 extern int totalPillsPlaced;
+extern int pause;
 
 /*funzioni di gioco*/
 extern void drawSquare(int x, int y, uint16_t color);
@@ -42,6 +43,8 @@ uint8_t lfsr(uint8_t lfsr_register);
 extern int countPills(screen[32][24]);
 extern int countPwPills(screen[32][24]);
 extern void printScore(int countPills);
+extern void printLife(int lives);
+extern void life(int lives);
 
 // Definizione della struttura per Pac-Man
 typedef struct {

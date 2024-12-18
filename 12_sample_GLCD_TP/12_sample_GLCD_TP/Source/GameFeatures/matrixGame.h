@@ -10,5 +10,6 @@ extern int pacMan_sx[10][10];
 extern int powerPill[10][10];
 extern int pill[10][10];
 extern int clearBlock[10][10];
+extern int heart[10][10];
 
 #endif // MATRIX_H

@@ -30,7 +30,9 @@ uint8_t lfsr_register = 0x01;
 int main(void)
 {
 SystemInit();  												/* System Initialization (i.e., PLL)  */
-  init_RIT(0x004C4B40);
+  
+	BUTTON_init();
+	init_RIT(0x004C4B40);
 	LCD_Initialization();
 	joystick_init();
 	LCD_Clear(Black);

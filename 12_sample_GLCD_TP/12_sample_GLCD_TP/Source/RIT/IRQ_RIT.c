@@ -23,9 +23,32 @@
 
 
 extern int direction;
+volatile int press=0;
 
 void RIT_IRQHandler (void) {
     static int up = 0, down = 0, sx = 0, dx = 0;
+	
+		// Controllo INT0
+	
+		/*************************INT0***************************/
+		if(press !=0){
+				press++;
+				if((LPC_GPIO2->FIOPIN & (1<<10)) == 0){
+						switch(press){
+								case 2:
+										 pause = (pause == 0) ? 1 : 0;  // Se "pause" è 0, lo imposta a 1, altrimenti a 0
+										break;
+								default:
+										break;
+						}
+				} else {	/* button released */
+						press=0;			
+						NVIC_EnableIRQ(EINT0_IRQn);							 /* disable Button interrupts			*/
+						LPC_PINCON->PINSEL4    |= (1 << 20);     /* External interrupt 0 pin selection */
+						}
+				} // end INT0
+		
+		/*********************JOYSTICK**************************/
     // Controllo joystick UP
     if ((LPC_GPIO1->FIOPIN & (1 << 29)) == 0) {	
         up++;
