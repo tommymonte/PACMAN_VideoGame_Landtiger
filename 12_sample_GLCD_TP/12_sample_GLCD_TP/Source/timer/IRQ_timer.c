@@ -32,6 +32,9 @@ int totalPillsPlaced = 6;   // Contatore globale delle pills posizionate
 void TIMER0_IRQHandler(void) {
     static int cnt = 60;               // Mantiene il conto del tempo di gioco
     char buffer[10];                   // Buffer per il testo da stampare
+		static int delayCounter = 0;         // Contatore per il ritardo casuale
+    static int randomDelay = 5;          // Valore del ritardo casuale
+		static int totalPillsPlaced = 0;
 
     // Se pausa è attiva, mostra "PAUSE", altrimenti mostra il contatore
     if (pause == 0) {
@@ -56,6 +59,18 @@ void TIMER0_IRQHandler(void) {
 				}	else {
 							cnt--;  // Decrementa il contatore
         }
+				
+				// Se non ho ancora posizionato 6 pills
+        if (totalPillsPlaced < 6) {
+					if (randomDelay == 0){
+						delayCounter = 0;
+						randomDelay = (5 + (score % 5));
+						distributePills(score, screen);
+						totalPillsPlaced++;
+					} else {
+						randomDelay--;
+					}
+				}
     }
 
     // Ripulisce il flag di interruzione del Timer 0
@@ -162,21 +177,9 @@ void TIMER1_IRQHandler(void) {
 ******************************************************************************/
 
 void TIMER2_IRQHandler(void) {
-	  static int delayCounter = 0;         // Contatore per il ritardo casuale
-    static int randomDelay = 5;          // Valore del ritardo casuale
-		static int totalPillsPlaced = 0;
-		if ((LPC_TIM2->IR & 1) && pause == 1) {  // Verifica dell'interrupt
-				// Se non ho ancora posizionato 6 pills
-        if (totalPillsPlaced < 6) {
-					if (randomDelay == 0){
-						delayCounter = 0;
-						randomDelay = (5 + (score % 5));
-						distributePills(score, screen);
-						totalPillsPlaced++;
-					} else {
-						randomDelay--;
-					}
-				}
+	  
+		if ((LPC_TIM2->IR & 1)) {  // Verifica dell'interrupt
+				
 				LPC_TIM2->IR = 1;
 		}
  }

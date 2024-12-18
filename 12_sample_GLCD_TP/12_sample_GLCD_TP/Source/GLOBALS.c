@@ -133,21 +133,21 @@ int countPwPills(int screen[32][24]) {
     return count;  // Restituisce il numero di pillole (2)
 }
 
-void printScore(countPills){
+void printScore(int countPills){
     char buffer[30];                   // Buffer per il testo da stampare
 		// Aggiorna il display con il valore del contatore
     sprintf(buffer, "SCORE: %d", countPills);
     GUI_Text(120, 0, (uint8_t*)buffer, White, Black);
 }
 
-void life(lives) {
+void life( int lives) {
 		char buffer[10];                   // Buffer per il testo da stampare
 		// Aggiorna il display con il valore del contatore
     sprintf(buffer, "vite: %d", lives);
     GUI_Text(0, 310, (uint8_t*)buffer, White, Black);
 }
 
-void printLife(lives){
+void printLife( int lives){
 	int x_life = 0;
 	for ( int i = 0; i<lives; i++ ){
 					drawIcon(x_life*10, 300, heart, Red); 
