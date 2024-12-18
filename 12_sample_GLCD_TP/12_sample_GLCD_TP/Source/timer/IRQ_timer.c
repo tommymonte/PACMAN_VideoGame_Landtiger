@@ -150,19 +150,26 @@ void TIMER1_IRQHandler(void) {
 				
 				drawPacman();
 				printScore(score);
+				
         if (cnt_score == 1000) {
 					lives++;
 					cnt_score = 0;
 				}
 			} 
-				if (countPills(screen) == 0){
-					pause = 3;
-				}
 				
-				//life(lives);
-				printLife(lives);
-				// Cancella il flag di interruzione del Timer
-        LPC_TIM1->IR = 1;
+			if (countPills(screen) == 0){
+					pause = 3;
+				
+			}
+				
+				
+			//life(lives);
+				
+			printLife(lives);
+				
+			// Cancella il flag di interruzione del Timer
+        
+			LPC_TIM1->IR = 1;
     }
 }
 

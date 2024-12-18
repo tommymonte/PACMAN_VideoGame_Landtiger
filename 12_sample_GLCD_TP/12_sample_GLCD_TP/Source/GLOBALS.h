@@ -29,7 +29,7 @@ extern int score;
 extern int totalPillsPlaced;
 extern int pause;
 
-/*funzioni di gioco*/
+/*funzioni di gioco per PACMAN*/
 extern void drawSquare(int x, int y, uint16_t color);
 extern void drawScreenFromMatrix(int screen[32][24], int pill[10][10], int powerPill[10][10]);
 extern void drawIcon(int x, int y, int pacMan[10][10], uint16_t color);
@@ -57,5 +57,16 @@ extern int (*prevPacman)[10];
 
 // Dichiarazione della variabile globale Pac-Man
 extern PacMan pacman;
+
+/************GHOST FUNCTION******************/
+// Definizione della struttura per Pac-Man
+typedef struct {
+    int x;  // Posizione X nella matrice screen
+    int y;  // Posizione Y nella matrice screen
+} Ghost;
+
+extern Ghost ghost;
+
+
 
 #endif
