@@ -167,8 +167,8 @@ void TIMER1_IRQHandler(void) {
 				
 			printLife(lives);
 				
+			  moveGhost(&ghost, &pacman, screen);
 			// Cancella il flag di interruzione del Timer
-        
 			LPC_TIM1->IR = 1;
     }
 }

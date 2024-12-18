@@ -43,11 +43,12 @@ void drawIcon(int x, int y, int icon[10][10], uint16_t color) {
         for (int j = 0; j < 10; j++) {
             if (icon[i][j] == 1) {  // Se il pixel � acceso
                 LCD_DrawLine(x + j, y + i, x + j, y + i, color);  // Disegna un punto
-            }
+            } else if (icon[i][j] == 2) {
+							LCD_DrawLine(x + j, y + i, x + j, y + i, White);  // Disegna un punto
         }
     }
 }
-
+}
 void drawPacmanAt(int screenX, int screenY, int pacMan[10][10], uint16_t color) {
     int displayX = screenX * 10;  // Converti la cella logica in coordinate fisiche
     int displayY = screenY * 10;
@@ -159,3 +160,45 @@ void printLife( int lives){
 void initGame(void) {
 
 }
+
+
+void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
+    int current_x = ghost->x;
+    int current_y = ghost->y;
+    int target_x = pacman->x;
+    int target_y = pacman->y;
+
+    // Calcola la distanza manhattan nelle 4 direzioni
+    int dx[] = {0, 0, -1, 1};  // Su, Giù, Sinistra, Destra
+    int dy[] = {-1, 1, 0, 0};
+
+    int min_distance = 1000;  // Un valore grande per inizializzare
+    int next_x = current_x;
+    int next_y = current_y;
+
+    // Controlla tutte le 4 direzioni possibili
+    for (int i = 0; i < 4; i++) {
+        int new_x = current_x + dx[i];
+        int new_y = current_y + dy[i];
+
+        // Verifica che la nuova posizione sia valida (non oltre i limiti e non un muro)
+        if (new_x >= 0 && new_x < 32 && new_y >= 0 && new_y < 24 && screen[new_y][new_x] != 1) {
+            int distance = abs(target_x - new_x) + abs(target_y - new_y);  // Distanza manhattan
+
+            if (distance < min_distance) {
+                min_distance = distance;
+                next_x = new_x;
+                next_y = new_y;
+            }
+        }
+    }
+
+    // Aggiorna la posizione del fantasmino
+    ghost->x = next_x;
+    ghost->y = next_y;
+
+    // Aggiorna la visualizzazione
+    drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black);  // Cancella la vecchia posizione
+    drawIcon(next_x * 10, next_y * 10, ghost_matrix, Red);         // Disegna il fantasmino
+}
+

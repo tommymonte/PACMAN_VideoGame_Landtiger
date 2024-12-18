@@ -23,6 +23,7 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 int direction  = NOP; // default
 
 PacMan pacman = {12, 18}; // Posizione iniziale di Pac-Man
+Ghost ghost = {15, 12};  // Posizione iniziale del fantasmino
 int (*currentPacman)[10] = pacMan; // Inizializzato alla matrice per "destra"
 int (*prevPacman)[10] = pacMan;
 uint8_t lfsr_register = 0x01;

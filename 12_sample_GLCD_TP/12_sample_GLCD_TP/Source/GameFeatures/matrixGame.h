@@ -11,5 +11,6 @@ extern int powerPill[10][10];
 extern int pill[10][10];
 extern int clearBlock[10][10];
 extern int heart[10][10];
+extern int ghost_matrix[10][10];
 
 #endif // MATRIX_H
