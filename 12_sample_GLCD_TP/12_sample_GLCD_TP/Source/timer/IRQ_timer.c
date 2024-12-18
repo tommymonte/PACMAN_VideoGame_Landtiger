@@ -133,28 +133,24 @@ void TIMER1_IRQHandler(void) {
 ******************************************************************************/
 
 void TIMER2_IRQHandler(void) {
-	   static int delayCounter = 0;         // Contatore per il ritardo casuale
-    static int randomDelay = 0;          // Valore del ritardo casuale
+	  static int delayCounter = 0;         // Contatore per il ritardo casuale
+    static int randomDelay = 100;          // Valore del ritardo casuale
+		static int totalPillsPlaced = 0;
 	 if (LPC_TIM2->IR & 1) {  // Verifica dell'interrupt
-
+	
 	// Se non ho ancora posizionato 6 pills
         if (totalPillsPlaced < 6) {
-            // Controlla se il ritardo è completato
-            if (delayCounter >= randomDelay) {
-                // Posiziona una pillola
-                distributePills(lfsr_register, screen);
-                totalPillsPlaced++;
-
-                // Genera un nuovo ritardo casuale
-                randomDelay = (lfsr(lfsr_register) & 0x1F) + 10;  // Valore tra 10 e 41
-                delayCounter = 0;  // Resetta il contatore
-            } else {
-                delayCounter++;  // Incrementa il contatore di ritardo
-            }
+					
+					while (randomDelay != delayCounter) {
+						delayCounter++;
         }
-		 			LPC_TIM2->IR = 1;
+					delayCounter = 0;
+					distributePills(&lfsr_register, screen);
+		 			totalPillsPlaced++;
 	 }
-}
+				LPC_TIM2->IR = 1;
+	 }
+ }
 
 
 /******************************************************************************
