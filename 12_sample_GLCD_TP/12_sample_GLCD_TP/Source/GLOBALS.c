@@ -69,17 +69,18 @@ void drawPacman(void) {
     last_y = pacman.y;
 }
 
-void distributePills(uint8_t *lfsr_register, int screen[32][24]) {
+void distributePills(int score, int screen[32][24]) {
     int random_row, random_col;
 		int flag = 0;
+		int new_score = score;
 	
 		while (flag == 0) {
 			// Genera una posizione casuale usando LFSR
-			random_row = (lfsr(*lfsr_register) % 32);  // Riga tra 0 e 31
-			*lfsr_register = lfsr(*lfsr_register);     // Aggiorna l'LFSR
-			random_col = (lfsr(*lfsr_register) % 24);  // Colonna tra 0 e 23
-			*lfsr_register = lfsr(*lfsr_register);     // Aggiorna l'LFSR
-
+			random_row = ( new_score % 32 );  // Riga tra 0 e 31
+			//*lfsr_register = lfsr(*lfsr_register);     // Aggiorna l'LFSR
+			random_col = ( new_score % 24 );  // Colonna tra 0 e 23
+			//*lfsr_register = lfsr(*lfsr_register);     // Aggiorna l'LFSR
+			new_score++;
 			// Se il valore in quella posizione è 2, posiziona la pillola
 			if (screen[random_row][random_col] == 2) {
 					screen[random_row][random_col] = 3;  // Imposta la pillola

@@ -26,6 +26,7 @@
 ** Returned value:		None
 **
 ******************************************************************************/
+
 int totalPillsPlaced = 6;   // Contatore globale delle pills posizionate
 extern uint8_t lfsr_register;  // Registro LFSR iniziale
 
@@ -134,25 +135,24 @@ void TIMER1_IRQHandler(void) {
 
 void TIMER2_IRQHandler(void) {
 	  static int delayCounter = 0;         // Contatore per il ritardo casuale
-    static int randomDelay = 100;          // Valore del ritardo casuale
+    static int randomDelay = 5;          // Valore del ritardo casuale
 		static int totalPillsPlaced = 0;
 	 if (LPC_TIM2->IR & 1) {  // Verifica dell'interrupt
 	
 	// Se non ho ancora posizionato 6 pills
         if (totalPillsPlaced < 6) {
-					
-					while (randomDelay != delayCounter) {
-						delayCounter++;
-        }
-					delayCounter = 0;
-					distributePills(&lfsr_register, screen);
-		 			totalPillsPlaced++;
-	 }
+					if (randomDelay == 0){
+						delayCounter = 0;
+						randomDelay = (5 + (score % 5));
+						distributePills(score, screen);
+						totalPillsPlaced++;
+					} else {
+						randomDelay--;
+					}
+				}
 				LPC_TIM2->IR = 1;
-	 }
+		}
  }
-
-
 /******************************************************************************
 **                            End Of File
 ******************************************************************************/
