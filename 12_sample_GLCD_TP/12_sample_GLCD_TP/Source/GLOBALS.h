@@ -58,7 +58,7 @@ extern int (*prevPacman)[10];
 // Dichiarazione della variabile globale Pac-Man
 extern PacMan pacman;
 
-/************GHOST FUNCTION******************/
+/****************GHOST FUNCTION******************/
 // Definizione della struttura per Pac-Man
 typedef struct {
     int x;  // Posizione X nella matrice screen
