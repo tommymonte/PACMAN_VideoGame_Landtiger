@@ -168,7 +168,7 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
     int target_x = pacman->x;
     int target_y = pacman->y;
 
-    // Calcola la distanza manhattan nelle 4 direzioni
+    // Calcola la distanza Manhattan nelle 4 direzioni
     int dx[] = {0, 0, -1, 1};  // Su, Giù, Sinistra, Destra
     int dy[] = {-1, 1, 0, 0};
 
@@ -183,7 +183,7 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
 
         // Verifica che la nuova posizione sia valida (non oltre i limiti e non un muro)
         if (new_x >= 0 && new_x < 32 && new_y >= 0 && new_y < 24 && screen[new_y][new_x] != 1) {
-            int distance = abs(target_x - new_x) + abs(target_y - new_y);  // Distanza manhattan
+            int distance = abs(target_x - new_x) + abs(target_y - new_y);  // Distanza Manhattan
 
             if (distance < min_distance) {
                 min_distance = distance;
@@ -193,12 +193,28 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
         }
     }
 
-    // Aggiorna la posizione del fantasmino
+    // Ripristina il valore della cella precedente
+    screen[current_y][current_x] = ghost->previousValue;
+    if (ghost->previousValue == 2) {
+				drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
+        drawIcon(current_x * 10, current_y * 10, pill, Magenta); // Ripristina la pillola
+    } else if (ghost->previousValue == 0) {
+        drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
+    }
+
+    // Salva il valore della nuova cella
+    ghost->previousValue = screen[next_y][next_x];
+
+    // Aggiorna la posizione del fantasmino sulla griglia
     ghost->x = next_x;
     ghost->y = next_y;
+    screen[next_y][next_x] = 4;  // Assegna un valore specifico per il fantasmino
 
-    // Aggiorna la visualizzazione
-    drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black);  // Cancella la vecchia posizione
-    drawIcon(next_x * 10, next_y * 10, ghost_matrix, Red);         // Disegna il fantasmino
+    // Disegna il fantasmino nella nuova posizione
+    drawIcon(next_x * 10, next_y * 10, ghost_matrix, Red);
+		
+		 if (ghost->x == pacman->x && ghost->y == pacman->y) {
+			pause = 2;
+		 }
 }
 

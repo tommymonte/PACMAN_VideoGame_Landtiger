@@ -63,6 +63,7 @@ extern PacMan pacman;
 typedef struct {
     int x;  // Posizione X nella matrice screen
     int y;  // Posizione Y nella matrice screen
+	  int previousValue; // Valore originale della cella (es. 0, 2, 3)
 } Ghost;
 
 extern Ghost ghost;
