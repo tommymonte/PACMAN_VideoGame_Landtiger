@@ -29,9 +29,10 @@
 
 int totalPillsPlaced = 6;   // Contatore globale delle pills posizionate
 frightened_mode = 0;
+static int cnt = 60;               // Mantiene il conto del tempo di gioco
 
 void TIMER0_IRQHandler(void) {
-    static int cnt = 60;               // Mantiene il conto del tempo di gioco
+    
     char buffer[10];                   // Buffer per il testo da stampare
 		static int delayCounter = 0;         // Contatore per il ritardo casuale
     static int randomDelay = 5;          // Valore del ritardo casuale
@@ -113,8 +114,13 @@ void TIMER1_IRQHandler(void) {
                         score += 50; // Aumenta il punteggio speciale
 												cnt_score += 50;
 												frightened_mode = 1;
-        } else if (ghost.x == pacman.x && ghost.y == pacman.y && frightened_mode == 1) {  
-						pause = 3;
+        } else if (ghost.x == pacman.x && ghost.y == pacman.y && frightened_mode == 1 || screen[pacman.y][pacman.x] == 4) {  
+						//pause = 3;
+						lives++;
+						ghost.x = 12;
+						ghost.y = 16;
+						frightened_mode = 0;
+					ghost.previousValue = 0;
 				}
         // Aggiorna la posizione di Pac-Man in base alla direzione	
         switch (direction) {
@@ -191,14 +197,29 @@ void TIMER2_IRQHandler(void) {
 	  
 		if ((LPC_TIM2->IR & 1)) {  // Verifica dell'interrupt
 				if (pause == 1) {
+					
 					if (frightened_mode == 0) {
 					moveGhost(&ghost, &pacman, screen);
+					
 				} else {
 					moveGhost_fright(&ghost, &pacman, screen, frightened_mode);
+					if (ghost.x == pacman.x && ghost.y == pacman.y) {  
+						drawIcon(ghost.x*10, ghost.y*10, ghost_matrix, Black);
+						lives++;
+						ghost.x = 12;
+						ghost.y = 16;
+						frightened_mode = 0;
+						ghost.previousValue = 0;
+						
+				}
 				}
 			
 			} else {
 				drawIcon(ghost.x*10, ghost.y*10, ghost_matrix, Red);
+			}
+				
+			if ( cnt % 10 == 0 && cnt != 60 ) {
+				LPC_TIM2->MR0 -= 1500000;
 			}
 				LPC_TIM2->IR = 1;
 		}

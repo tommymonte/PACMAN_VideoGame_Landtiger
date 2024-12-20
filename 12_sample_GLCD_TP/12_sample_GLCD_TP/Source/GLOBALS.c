@@ -275,7 +275,7 @@ void moveGhost_fright(Ghost *ghost, PacMan *pacman, int screen[32][24], int frig
     // Aggiorna la posizione del fantasmino sulla griglia
     ghost->x = next_x;
     ghost->y = next_y;
-    // screen[next_y][next_x] = 4; // Assegna un valore specifico per il fantasmino
+    screen[next_y][next_x] = 4; // Assegna un valore specifico per il fantasmino
 		if (frightened_mode == 0) {
     // Disegna il fantasmino nella nuova posizione
     drawIcon(next_x * 10, next_y * 10, ghost_matrix ,Red);
@@ -283,9 +283,10 @@ void moveGhost_fright(Ghost *ghost, PacMan *pacman, int screen[32][24], int frig
 			drawIcon(next_x * 10, next_y * 10, ghost_matrix, Blue2);
 		}
 		
-    if (next_x == pacman->x && next_y == pacman->y && frightened_mode == 1) {
+		/*
+    if (ghost->x == pacman->x && ghost->y == pacman->y && frightened_mode == 1) {
 			pause = 3;
-		 }
+		 }*/
 }
 
 
