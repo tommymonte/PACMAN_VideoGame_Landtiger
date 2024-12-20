@@ -94,7 +94,7 @@ void TIMER0_IRQHandler(void) {
 volatile int pacman_direction = 0; // Direzione di Pac-Man
 // Funzione per disegnare un quadrato 5x5 usando linee
 int score = 0;
-int pause = 0;
+int pause = 1;
 int lives = 1;
 int cnt_score = 0;
 
@@ -114,32 +114,44 @@ void TIMER1_IRQHandler(void) {
                         score += 50; // Aumenta il punteggio speciale
 												cnt_score += 50;
 												frightened_mode = 1;
-        } else if (ghost.x == pacman.x && ghost.y == pacman.y && frightened_mode == 1 || screen[pacman.y][pacman.x] == 4) {  
+        } else if (ghost.x == pacman.x && ghost.y == pacman.y && frightened_mode == 1) {  
 						//pause = 3;
+					drawIcon(ghost.x*10, ghost.y*10, ghost_matrix, Black);
+						screen[pacman.y][pacman.x] = 0;
 						lives++;
 						ghost.x = 12;
 						ghost.y = 16;
 						frightened_mode = 0;
-					ghost.previousValue = 0;
+						ghost.previousValue = 0;
+						
+				}else if (ghost.x == pacman.x && ghost.y == pacman.y && frightened_mode == 0) {  
+						screen[pacman.y][pacman.x] = 0;
+						lives--;
+						ghost.previousValue = 0;
+						drawIcon(ghost.x*10, ghost.y*10, ghost_matrix, Black);
+						if (lives == 0) {
+							pause = 2;
+						}
 				}
+				
         // Aggiorna la posizione di Pac-Man in base alla direzione	
         switch (direction) {
             case UP:
-                if (pacman.y > 0 && (screen[pacman.y - 1][pacman.x] == 0 || screen[pacman.y - 1][pacman.x] == 2 || screen[pacman.y - 1][pacman.x] == 3)) {
+                if (pacman.y > 0 && (screen[pacman.y - 1][pacman.x] !=1)) {//|| screen[pacman.y - 1][pacman.x] == 2 || screen[pacman.y - 1][pacman.x] == 3)) {
 										prevPacman = currentPacman;	
 										currentPacman = pacMan_up;
                     pacman.y--;
                 }
                 break;
             case DOWN:
-                if (pacman.y < 29 && (screen[pacman.y + 1][pacman.x] == 0 || screen[pacman.y + 1][pacman.x] == 2 || screen[pacman.y + 1][pacman.x] == 3)) {
+                if (pacman.y < 29 && (screen[pacman.y + 1][pacman.x] != 1 )){//|| screen[pacman.y + 1][pacman.x] == 2 || screen[pacman.y + 1][pacman.x] == 3)) {
                     prevPacman = currentPacman;	
 					          currentPacman = pacMan_down;    
 								    pacman.y++;
                 }
                 break;
             case SX:
-                if (pacman.x > 0 && (screen[pacman.y][pacman.x - 1] == 0 || screen[pacman.y][pacman.x - 1] == 2 || screen[pacman.y][pacman.x - 1] == 3)) {
+                if (pacman.x > 0 && (screen[pacman.y][pacman.x - 1] != 1 )){ //|| screen[pacman.y][pacman.x - 1] == 2 || screen[pacman.y][pacman.x - 1] == 3)) {
                     prevPacman = currentPacman;	
 					          currentPacman = pacMan_sx;    
 								    pacman.x--;
@@ -148,7 +160,7 @@ void TIMER1_IRQHandler(void) {
                 }
                 break;
             case DX:
-                if (pacman.x < 23 && (screen[pacman.y][pacman.x + 1] == 0  || screen[pacman.y][pacman.x + 1] == 2 || screen[pacman.y][pacman.x + 1] == 3)) {
+                if (pacman.x < 23 && (screen[pacman.y][pacman.x + 1] != 1 )){// || screen[pacman.y][pacman.x + 1] == 2 || screen[pacman.y][pacman.x + 1] == 3)) {
                     prevPacman = currentPacman;	
 					          currentPacman = pacMan;    
 								    pacman.x++;
@@ -203,7 +215,7 @@ void TIMER2_IRQHandler(void) {
 					
 				} else {
 					moveGhost_fright(&ghost, &pacman, screen, frightened_mode);
-					if (ghost.x == pacman.x && ghost.y == pacman.y) {  
+					/*if (ghost.x == pacman.x && ghost.y == pacman.y) {  
 						drawIcon(ghost.x*10, ghost.y*10, ghost_matrix, Black);
 						lives++;
 						ghost.x = 12;
@@ -211,7 +223,7 @@ void TIMER2_IRQHandler(void) {
 						frightened_mode = 0;
 						ghost.previousValue = 0;
 						
-				}
+				}*/
 				}
 			
 			} else {
@@ -219,7 +231,7 @@ void TIMER2_IRQHandler(void) {
 			}
 				
 			if ( cnt % 10 == 0 && cnt != 60 ) {
-				LPC_TIM2->MR0 -= 1500000;
+				// LPC_TIM2->MR0 -= 1500000;
 			}
 				LPC_TIM2->IR = 1;
 		}

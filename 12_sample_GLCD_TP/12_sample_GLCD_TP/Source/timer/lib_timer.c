@@ -151,6 +151,7 @@ uint32_t init_timer ( uint8_t timer_num, uint32_t TimerInterval )
 // <<< end of configuration section >>>    
 
 	NVIC_EnableIRQ(TIMER0_IRQn);
+	NVIC_SetPriority(TIMER0_IRQn,1); // da emulatore senza priority non funziona BOH
 	return (1);
   }
   else if ( timer_num == 1 )
@@ -159,7 +160,8 @@ uint32_t init_timer ( uint8_t timer_num, uint32_t TimerInterval )
 	LPC_TIM1->MCR = 3;				/* Interrupt and Reset on MR1 */
 
 	NVIC_EnableIRQ(TIMER1_IRQn);
-	return (1);
+	NVIC_SetPriority(TIMER1_IRQn,1);
+		return (1);
   }
 	else if ( timer_num == 2 )
   {
@@ -167,6 +169,7 @@ uint32_t init_timer ( uint8_t timer_num, uint32_t TimerInterval )
 	LPC_TIM2->MCR = 3;				/* Interrupt and Reset on MR1 */
 
 	NVIC_EnableIRQ(TIMER2_IRQn);
+	NVIC_SetPriority(TIMER2_IRQn,1);
 	return (1);
   }
   return (0);
