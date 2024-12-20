@@ -44,7 +44,7 @@ SystemInit();  												/* System Initialization (i.e., PLL)  */
 	drawScreenFromMatrix(screen, pill, powerPill);
 	
 	init_timer(1, 0x2625A0); 						    /* 500us * 25MHz = 1.25*10^3 = 0x4E2 */
-	init_timer(0, 0x2625A0 ); 						    /* 8us * 25MHz = 200 ~= 0xC8 */
+	init_timer(0, 0x17D7840 ); 						    /* 8us * 25MHz = 200 ~= 0xC8 */
 	init_timer(2, 25000000); 						    /* 8us * 25MHz = 200 ~= 0xC8 */
 	
 	enable_timer(0);

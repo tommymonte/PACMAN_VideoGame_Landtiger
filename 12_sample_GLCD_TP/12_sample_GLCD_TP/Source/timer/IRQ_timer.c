@@ -28,6 +28,7 @@
 ******************************************************************************/
 
 int totalPillsPlaced = 6;   // Contatore globale delle pills posizionate
+frightened_mode = 0;
 
 void TIMER0_IRQHandler(void) {
     static int cnt = 60;               // Mantiene il conto del tempo di gioco
@@ -111,7 +112,10 @@ void TIMER1_IRQHandler(void) {
 												drawIcon(pacman.x*10, pacman.y*10, powerPill, Black);
                         score += 50; // Aumenta il punteggio speciale
 												cnt_score += 50;
-        }
+												frightened_mode = 1;
+        } else if (ghost.x == pacman.x && ghost.y == pacman.y && frightened_mode == 1) {  
+						pause = 3;
+				}
         // Aggiorna la posizione di Pac-Man in base alla direzione	
         switch (direction) {
             case UP:
@@ -167,7 +171,7 @@ void TIMER1_IRQHandler(void) {
 				
 			printLife(lives);
 				
-			  moveGhost(&ghost, &pacman, screen);
+			  
 			// Cancella il flag di interruzione del Timer
 			LPC_TIM1->IR = 1;
     }
@@ -186,10 +190,20 @@ void TIMER1_IRQHandler(void) {
 void TIMER2_IRQHandler(void) {
 	  
 		if ((LPC_TIM2->IR & 1)) {  // Verifica dell'interrupt
-				
+				if (pause == 1) {
+					if (frightened_mode == 0) {
+					moveGhost(&ghost, &pacman, screen);
+				} else {
+					moveGhost_fright(&ghost, &pacman, screen, frightened_mode);
+				}
+			
+			} else {
+				drawIcon(ghost.x*10, ghost.y*10, ghost_matrix, Red);
+			}
 				LPC_TIM2->IR = 1;
 		}
- }
+	}
+ 
 /******************************************************************************
 **                            End Of File
 ******************************************************************************/

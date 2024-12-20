@@ -213,8 +213,79 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
     // Disegna il fantasmino nella nuova posizione
     drawIcon(next_x * 10, next_y * 10, ghost_matrix, Red);
 		
-		 if (ghost->x == pacman->x && ghost->y == pacman->y) {
+		 if (ghost->x == pacman->x && ghost->y == pacman->y || (pacman->x == next_x && pacman->y == next_y)) {
 			pause = 2;
 		 }
 }
+
+void moveGhost_fright(Ghost *ghost, PacMan *pacman, int screen[32][24], int frightened_mode) {
+    int current_x = ghost->x;
+    int current_y = ghost->y;
+    int target_x = pacman->x;
+    int target_y = pacman->y;
+
+    // Direzioni possibili: Su, Giù, Sinistra, Destra
+    int dx[] = {0, 0, -1, 1};
+    int dy[] = {-1, 1, 0, 0};
+
+    int best_distance = frightened_mode ? -1 : 1000; // In modalità frightened cerchiamo la distanza massima
+    int next_x = current_x;
+    int next_y = current_y;
+
+    // Controlla tutte le 4 direzioni possibili
+    for (int i = 0; i < 4; i++) {
+        int new_x = current_x + dx[i];
+        int new_y = current_y + dy[i];
+
+        // Verifica che la nuova posizione sia valida (non oltre i limiti e non un muro)
+        if (new_x >= 0 && new_x < 32 && new_y >= 0 && new_y < 24 && screen[new_y][new_x] != 1) {
+            int distance = abs(target_x - new_x) + abs(target_y - new_y); // Distanza Manhattan
+
+            if (frightened_mode == 1) {
+                // Se il fantasmino è in modalità frightened, cerca di massimizzare la distanza
+                if (distance > best_distance) {
+                    best_distance = distance;
+                    next_x = new_x;
+                    next_y = new_y;
+                }
+            } else {
+                // Se il fantasmino insegue Pac-Man, cerca di minimizzare la distanza
+                if (distance < best_distance) {
+                    best_distance = distance;
+                    next_x = new_x;
+                    next_y = new_y;
+                }
+            }
+        }
+    }
+
+    // Ripristina il valore della cella precedente
+    screen[current_y][current_x] = ghost->previousValue;
+    if (ghost->previousValue == 2) {
+				drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
+        drawIcon(current_x * 10, current_y * 10, pill, Magenta); // Ripristina la pillola
+    } else if (ghost->previousValue == 0) {
+        //drawIcon(current_x * 10, current_y * 10, pill, Black); // Ripristina una cella vuota
+				drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
+    }
+
+    // Salva il valore della nuova cella
+    ghost->previousValue = screen[next_y][next_x];
+
+    // Aggiorna la posizione del fantasmino sulla griglia
+    ghost->x = next_x;
+    ghost->y = next_y;
+    // screen[next_y][next_x] = 4; // Assegna un valore specifico per il fantasmino
+		if (frightened_mode == 0) {
+    // Disegna il fantasmino nella nuova posizione
+    drawIcon(next_x * 10, next_y * 10, ghost_matrix ,Red);
+		} else {
+			drawIcon(next_x * 10, next_y * 10, ghost_matrix, Blue2);
+		}
+		
+    if (next_x == pacman->x && next_y == pacman->y && frightened_mode == 1) {
+			pause = 3;
+		 }
+}
+
 

@@ -10,7 +10,8 @@
 
 // Dichiarazione della variabile globale direction
 extern int direction;
-
+extern int chase_mode;
+extern int frightened_mode;
 extern int row;
 extern int col;
 
