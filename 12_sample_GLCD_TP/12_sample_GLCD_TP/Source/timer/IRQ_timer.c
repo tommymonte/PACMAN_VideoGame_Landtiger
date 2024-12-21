@@ -193,22 +193,8 @@ void TIMER1_IRQHandler(void) {
 			// Cancella il flag di interruzione del Timer
 			LPC_TIM1->IR = 1;
     }
-}
-
-/******************************************************************************
-** Function name:		Timer2_IRQHandler
-**
-** Descriptions:		Timer/Counter 2 interrupt handler
-**
-** parameters:			None
-** Returned value:		None
-**
-******************************************************************************/
-
-void TIMER2_IRQHandler(void) {
-	  
-		if ((LPC_TIM2->IR & 1)) {  // Verifica dell'interrupt
-				if (pause == 1) {
+		if (LPC_TIM1->IR & 2) {
+			if (pause == 1) {
 					
 					if (frightened_mode == 0) {
 					moveGhost(&ghost, &pacman, screen);
@@ -233,6 +219,24 @@ void TIMER2_IRQHandler(void) {
 			if ( cnt % 10 == 0 && cnt != 60 ) {
 				// LPC_TIM2->MR0 -= 1500000;
 			}
+			LPC_TIM1->IR = 2;
+		}
+}
+
+/******************************************************************************
+** Function name:		Timer2_IRQHandler
+**
+** Descriptions:		Timer/Counter 2 interrupt handler
+**
+** parameters:			None
+** Returned value:		None
+**
+******************************************************************************/
+
+void TIMER2_IRQHandler(void) {
+	  
+		if ((LPC_TIM2->IR & 1)) {  // Verifica dell'interrupt
+				
 				LPC_TIM2->IR = 1;
 		}
 	}
