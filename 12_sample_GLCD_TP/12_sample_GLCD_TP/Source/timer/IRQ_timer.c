@@ -97,6 +97,7 @@ int score = 0;
 int pause = 1;
 int lives = 1;
 int cnt_score = 0;
+int delay_ghost = 0;
 
 void TIMER1_IRQHandler(void) {
     if (LPC_TIM1->IR & 1) {  // Verifica dell'interrupt
@@ -189,14 +190,10 @@ void TIMER1_IRQHandler(void) {
 				
 			printLife(lives);
 				
-			  
-			// Cancella il flag di interruzione del Timer
-			LPC_TIM1->IR = 1;
-    }
-		if (LPC_TIM1->IR & 2) {
-			if (pause == 1) {
-					
-					if (frightened_mode == 0) {
+			
+			while(delay_ghost == 3){
+				delay_ghost = 0;		
+				if (frightened_mode == 0) {
 					moveGhost(&ghost, &pacman, screen);
 					
 				} else {
@@ -211,18 +208,14 @@ void TIMER1_IRQHandler(void) {
 						
 				}*/
 				}
-			
-			} else {
-				drawIcon(ghost.x*10, ghost.y*10, ghost_matrix, Red);
-			}
-				
-			if ( cnt % 10 == 0 && cnt != 60 ) {
-				// LPC_TIM2->MR0 -= 1500000;
-			}
-			LPC_TIM1->IR = 2;
-		}
-}
+	}
 
+			delay_ghost++;
+			// Cancella il flag di interruzione del Timer
+			LPC_TIM1->IR = 1;
+    }
+		
+	}
 /******************************************************************************
 ** Function name:		Timer2_IRQHandler
 **
