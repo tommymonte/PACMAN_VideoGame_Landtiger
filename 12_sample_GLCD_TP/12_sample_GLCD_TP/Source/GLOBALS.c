@@ -200,6 +200,9 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
         drawIcon(current_x * 10, current_y * 10, pill, Magenta); // Ripristina la pillola
     } else if (ghost->previousValue == 0) {
         drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
+    } else if (ghost->previousValue == 3) {
+        drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
+        drawIcon(current_x * 10, current_y * 10, powerPill, Magenta); // Ripristina la pillola
     }
 
     // Salva il valore della nuova cella
@@ -212,10 +215,6 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
 
     // Disegna il fantasmino nella nuova posizione
     drawIcon(next_x * 10, next_y * 10, ghost_matrix, Red);
-		
-		 if (ghost->x == pacman->x && ghost->y == pacman->y || (pacman->x == next_x && pacman->y == next_y)) {
-			pause = 2;
-		 }
 }
 
 void moveGhost_fright(Ghost *ghost, PacMan *pacman, int screen[32][24], int frightened_mode) {
@@ -267,6 +266,9 @@ void moveGhost_fright(Ghost *ghost, PacMan *pacman, int screen[32][24], int frig
     } else if (ghost->previousValue == 0) {
         //drawIcon(current_x * 10, current_y * 10, pill, Black); // Ripristina una cella vuota
 				drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
+    } else if (ghost->previousValue == 3) {
+        drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
+        drawIcon(current_x * 10, current_y * 10, powerPill, Magenta); // Ripristina la pillola
     }
 
     // Salva il valore della nuova cella
@@ -282,11 +284,6 @@ void moveGhost_fright(Ghost *ghost, PacMan *pacman, int screen[32][24], int frig
 		} else {
 			drawIcon(next_x * 10, next_y * 10, ghost_matrix, Blue2);
 		}
-		
-		/*
-    if (ghost->x == pacman->x && ghost->y == pacman->y && frightened_mode == 1) {
-			pause = 3;
-		 }*/
 }
 
 

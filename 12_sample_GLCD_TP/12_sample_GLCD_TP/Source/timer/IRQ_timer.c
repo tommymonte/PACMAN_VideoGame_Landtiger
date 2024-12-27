@@ -115,26 +115,8 @@ void TIMER1_IRQHandler(void) {
                         score += 50; // Aumenta il punteggio speciale
 												cnt_score += 50;
 												frightened_mode = 1;
-        } else if (ghost.x == pacman.x && ghost.y == pacman.y && frightened_mode == 1) {  
-						//pause = 3;
-					drawIcon(ghost.x*10, ghost.y*10, ghost_matrix, Black);
-						screen[pacman.y][pacman.x] = 0;
-						lives++;
-						ghost.x = 12;
-						ghost.y = 16;
-						frightened_mode = 0;
-						ghost.previousValue = 0;
-						
-				}else if (ghost.x == pacman.x && ghost.y == pacman.y && frightened_mode == 0) {  
-						screen[pacman.y][pacman.x] = 0;
-						lives--;
-						ghost.previousValue = 0;
-						drawIcon(ghost.x*10, ghost.y*10, ghost_matrix, Black);
-						if (lives == 0) {
-							pause = 2;
-						}
-				}
-				
+        } 
+            
         // Aggiorna la posizione di Pac-Man in base alla direzione	
         switch (direction) {
             case UP:
@@ -185,36 +167,42 @@ void TIMER1_IRQHandler(void) {
 				
 			}
 				
-				
-			//life(lives);
-				
 			printLife(lives);
 				
-			
+			// Controllo collisione tra Pac-Man e fantasma
+            if (ghost.x == pacman.x && ghost.y == pacman.y) {
+                if (frightened_mode == 1) {  
+                    // Pac-Man mangia il fantasma
+                    drawIcon(ghost.x * 10, ghost.y * 10, ghost_matrix, Black);
+                    lives++;  // Incrementa le vite
+                    ghost.x = 12;  // Torna alla posizione iniziale
+                    ghost.y = 16;
+                    frightened_mode = 0;  // Esce dalla modalità frightened
+                    ghost.previousValue = 0;
+                } else {  
+										delay_ghost = 0;
+                    // Fantasma mangia Pac-Man
+                    drawIcon(pacman.x * 10, pacman.y * 10, pacMan, Black);
+                    lives--;  // Decrementa le vite
+                    if (lives == 0) {
+                        pause = 2;  // Fine del gioco
+                    }
+                }
+            }
 			while(delay_ghost == 3){
 				delay_ghost = 0;		
 				if (frightened_mode == 0) {
 					moveGhost(&ghost, &pacman, screen);
-					
 				} else {
 					moveGhost_fright(&ghost, &pacman, screen, frightened_mode);
-					/*if (ghost.x == pacman.x && ghost.y == pacman.y) {  
-						drawIcon(ghost.x*10, ghost.y*10, ghost_matrix, Black);
-						lives++;
-						ghost.x = 12;
-						ghost.y = 16;
-						frightened_mode = 0;
-						ghost.previousValue = 0;
-						
-				}*/
 				}
-	}
+			}
 
 			delay_ghost++;
+			
 			// Cancella il flag di interruzione del Timer
 			LPC_TIM1->IR = 1;
     }
-		
 	}
 /******************************************************************************
 ** Function name:		Timer2_IRQHandler
