@@ -30,8 +30,7 @@ uint8_t lfsr_register = 0x01;
 
 int main(void)
 {
-SystemInit();  												/* System Initialization (i.e., PLL)  */
-  
+	SystemInit();  												/* System Initialization (i.e., PLL)  */
 	BUTTON_init();
 	init_RIT(0x004C4B40);
 	LCD_Initialization();
@@ -39,8 +38,8 @@ SystemInit();  												/* System Initialization (i.e., PLL)  */
 	LCD_Clear(Black);
 	
 	enable_RIT();
+	ADC_init();
 	
-	//distributePills(lfsr_register, screen);
 	drawScreenFromMatrix(screen, pill, powerPill);
 	
 	init_timer(1, 0x2625A0); 						    /* 500us * 25MHz = 1.25*10^3 = 0x4E2 */
@@ -48,14 +47,17 @@ SystemInit();  												/* System Initialization (i.e., PLL)  */
 	LPC_TIM1->MCR |= 3 << 3*1;	
 	
 	init_timer(0, 0x17D7840 ); 						    /* 8us * 25MHz = 200 ~= 0xC8 */
-	init_timer(2, 25000000); 						    /* 8us * 25MHz = 200 ~= 0xC8 */
-	
+
 	enable_timer(0);
 	enable_timer(1);
-	enable_timer(2);
 
 	LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
 	LPC_SC->PCON &= ~(0x2);						
+	
+			
+	LPC_PINCON->PINSEL1 |= (1<<21);
+	LPC_PINCON->PINSEL1 &= ~(1<<20);
+	LPC_GPIO0->FIODIR |= (1<<26);
 	
   while (1)	
   {

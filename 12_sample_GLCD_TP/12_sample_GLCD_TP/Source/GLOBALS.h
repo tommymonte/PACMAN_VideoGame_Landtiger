@@ -28,7 +28,7 @@ extern int col;
 extern int lives;
 extern int score;
 extern int totalPillsPlaced;
-extern int pause;
+extern int game_pause;
 
 /*funzioni di gioco per PACMAN*/
 extern void drawSquare(int x, int y, uint16_t color);

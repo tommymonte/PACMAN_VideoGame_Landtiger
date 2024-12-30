@@ -39,14 +39,14 @@ void TIMER0_IRQHandler(void) {
 		static int totalPillsPlaced = 0;
 
     // Se pausa è attiva, mostra "PAUSE", altrimenti mostra il contatore
-    if (pause == 0) {
+    if (game_pause == 0) {
 				GUI_Text(0, 0, (uint8_t*)"CCCCCCCCC", Black, Black);  // Visualizza "PAUSE"
         sprintf(buffer, "PAUSE");
         GUI_Text(0, 0, (uint8_t*)buffer, Red, Black);  // Visualizza "PAUSE"
-		} else if (pause == 2) {
+		} else if (game_pause == 2) {
 				sprintf(buffer, "GAME OVER");
         GUI_Text(0, 0, (uint8_t*)buffer, Red, Black);  // Visualizza "PAUSE"
-		} else if (pause == 3){
+		} else if (game_pause == 3){
 			sprintf(buffer, "VICTORY!");
         GUI_Text(0, 0, (uint8_t*)buffer, Green, Black);  // Visualizza "PAUSE"
 		} else {
@@ -54,10 +54,10 @@ void TIMER0_IRQHandler(void) {
         GUI_Text(0, 0, (uint8_t*)buffer, Red, Black);  // Visualizza il tempo
     }
 
-    if (LPC_TIM0->IR & 1 && pause == 1) {  // Verifica se l'interruzione è causata dal Timer 0
+    if (LPC_TIM0->IR & 1 && game_pause == 1) {  // Verifica se l'interruzione è causata dal Timer 0
         if (cnt == 0 && countPills(screen) > 0) {
 							// game over
-							pause = 2;
+							game_pause = 2;
 				}	else {
 							cnt--;  // Decrementa il contatore
         }
@@ -94,15 +94,16 @@ void TIMER0_IRQHandler(void) {
 volatile int pacman_direction = 0; // Direzione di Pac-Man
 // Funzione per disegnare un quadrato 5x5 usando linee
 int score = 0;
-int pause = 1;
+int game_pause = 0;
 int lives = 1;
 int cnt_score = 0;
 int delay_ghost = 0;
+int flag_music = 0;
 
 void TIMER1_IRQHandler(void) {
     if (LPC_TIM1->IR & 1) {  // Verifica dell'interrupt
 			                     // Controllo per la raccolta delle pills
-			if (pause == 1) {
+			if (game_pause == 1) {
 				if (screen[pacman.y][pacman.x] == 2) {  
                         screen[pacman.y][pacman.x] = 0;  // Aggiorna la matrice
 												drawIcon(pacman.x *10, pacman.y * 10, pill, Black);
@@ -163,7 +164,7 @@ void TIMER1_IRQHandler(void) {
 			} 
 				
 			if (countPills(screen) == 0){
-					pause = 3;
+					game_pause = 3;
 				
 			}
 				
@@ -185,7 +186,7 @@ void TIMER1_IRQHandler(void) {
                     drawIcon(pacman.x * 10, pacman.y * 10, pacMan, Black);
                     lives--;  // Decrementa le vite
                     if (lives == 0) {
-                        pause = 2;  // Fine del gioco
+                        game_pause = 2;  // Fine del gioco
                     }
                 }
             }
@@ -213,14 +214,37 @@ void TIMER1_IRQHandler(void) {
 ** Returned value:		None
 **
 ******************************************************************************/
+uint16_t SinTable[45] =                                       /* ÕýÏÒ±í                       */
+{
+    410, 467, 523, 576, 627, 673, 714, 749, 778,
+    799, 813, 819, 817, 807, 789, 764, 732, 694, 
+    650, 602, 550, 495, 438, 381, 324, 270, 217,
+    169, 125, 87 , 55 , 30 , 12 , 2  , 0  , 6  ,   
+    20 , 41 , 70 , 105, 146, 193, 243, 297, 353
+};
 
 void TIMER2_IRQHandler(void) {
-	  
-		if ((LPC_TIM2->IR & 1)) {  // Verifica dell'interrupt
-				
-				LPC_TIM2->IR = 1;
-		}
+	 static int sineticks=0;
+	/* DAC management */	
+	static int currentValue; 
+	currentValue = SinTable[sineticks];
+	currentValue -= 410;
+	currentValue /= 1;
+	currentValue += 410;
+	LPC_DAC->DACR = currentValue <<6;
+	sineticks++;
+	if(sineticks==45) sineticks=0;
+ 
+		
+	LPC_TIM2->IR = 1;
+	return;
 	}
+
+void TIMER3_IRQHandler(void) {
+	disable_timer(2);
+  LPC_TIM3->IR = 1;			/* clear interrupt flag */
+  return;
+}
  
 /******************************************************************************
 **                            End Of File

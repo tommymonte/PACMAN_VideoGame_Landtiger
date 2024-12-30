@@ -21,11 +21,74 @@
 **
 ******************************************************************************/
 
-
 extern int direction;
 volatile int press=0;
 volatile int press_1=0;
 volatile int press_2=0;
+extern int flag_music;
+// beat 1/4 = 1.65/4 seconds
+#define RIT_SEMIMINIMA 8
+#define RIT_MINIMA 16
+#define RIT_INTERA 32
+#define UPTICKS 1
+
+//SHORTENING UNDERTALE: TOO MANY REPETITIONS
+NOTE song[] = 
+{
+   	// 1
+	{d3, time_semicroma},
+	{d3, time_semicroma},
+	{d4, time_croma},
+	{a3, time_croma},
+	{pause, time_semicroma},
+	{a3b, time_semicroma},
+	{pause, time_semicroma},
+	{g3, time_croma},
+	{f3, time_semicroma*2},
+	{d3, time_semicroma},
+	{f3, time_semicroma},
+	{g3, time_semicroma},
+	// 2
+	{c3, time_semicroma},
+	{c3, time_semicroma},
+	{d4, time_croma},
+	{a3, time_croma},
+	{pause, time_semicroma},
+	{a3b, time_semicroma},
+	{pause, time_semicroma},
+	{g3, time_croma},
+	{f3, time_semicroma*2},
+	{d3, time_semicroma},
+	{f3, time_semicroma},
+	{g3, time_semicroma},
+	// 3
+	{c3b, time_semicroma},
+	{c3b, time_semicroma},
+	{d4, time_croma},
+	{a3, time_croma},
+	{pause, time_semicroma},
+	{a3b, time_semicroma},
+	{pause, time_semicroma},
+	{g3, time_croma},
+	{f3, time_semicroma*2},
+	{d3, time_semicroma},
+	{f3, time_semicroma},
+	{g3, time_semicroma},
+	// 4
+	{a2b, time_semicroma},
+	{a2b, time_semicroma},
+	{d4, time_croma},
+	{a3, time_croma},
+	{pause, time_semicroma},
+	{a3b, time_semicroma},
+	{pause, time_semicroma},
+	{g3, time_croma},
+	{f3, time_semicroma*2},
+	{d3, time_semicroma},
+	{f3, time_semicroma},
+	{g3, time_semicroma},
+	// 5
+};
 
 void RIT_IRQHandler (void) {
     static int up = 0, down = 0, sx = 0, dx = 0;
@@ -36,7 +99,7 @@ void RIT_IRQHandler (void) {
 				if((LPC_GPIO2->FIOPIN & (1<<10)) == 0){
 						switch(press){
 								case 2:
-										 pause = (pause == 0) ? 1 : 0;  // Se "pause" è 0, lo imposta a 1, altrimenti a 0
+										 game_pause = (game_pause == 0) ? 1 : 0;  // Se "pause" è 0, lo imposta a 1, altrimenti a 0
 										break;
 								default:
 										break;
@@ -90,7 +153,29 @@ void RIT_IRQHandler (void) {
 				up = 0;
 				down = 0;
     }
-
+		
+		/************** MUSIC *****************/
+		
+		static int currentNote = 0;
+		static int ticks = 0;
+		
+		if ( (LPC_TIM0->TC > 10000)) {
+		if(!isNotePlaying())
+		{
+			++ticks;
+			if(ticks == UPTICKS)
+			{
+				ticks = 0;
+				playNote(song[currentNote++]);
+			}
+		}
+	
+		if(currentNote == (sizeof(song) / sizeof(song[0])))
+		{
+			disable_RIT();
+		}
+	}
+		
     // Cancella il flag di interrupt
     LPC_RIT->RICTRL |= 0x1;
 }
