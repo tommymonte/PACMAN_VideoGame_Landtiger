@@ -1,19 +1,27 @@
 #ifndef MUSIC_H
 #define MUSIC_H
 
-
-//Default: 1.65
-#define SPEEDUP 1.6
-
 #define TIMERSCALER 1
 
-#define SECOND 0x17D7840 * TIMERSCALER
+#define SECOND 0x2625A0 * TIMERSCALER
 
 
 typedef char BOOL;
 #define TRUE 1
 #define FALSE 0
 
+#ifdef SIMULATOR
+    // In simulation mode, these values are adjusted to produce a "familiar" sound 
+    // for the human ear when played through the buzzer. This ensures the sound 
+    // resembles what it would sound like on the real hardware.
+    #define SPEEDUP        1.4f    // Increase the speed to adjust timing for simulation
+    #define AMPLIFIER      2       // Amplify the sound for better simulation
+#else
+    // Default values for real hardware playback
+    #define SPEEDUP        1.0f    // Normal speed
+    #define AMPLIFIER      1       // No amplification
+#endif
+	
 typedef enum note_durations
 {
 	time_semibiscroma = (unsigned int)(SECOND * SPEEDUP / 64.0f + 0.5), // 1/128

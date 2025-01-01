@@ -7,7 +7,7 @@ void playNote(NOTE note)
 	if(note.freq != pause)
 	{
 		reset_timer(2);
-		init_timer(2, note.freq);
+		init_timer(2, note.freq*AMPLIFIER);
 		enable_timer(2);
 	}
 	reset_timer(3);
