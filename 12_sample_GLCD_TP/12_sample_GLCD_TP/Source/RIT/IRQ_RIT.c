@@ -109,7 +109,11 @@ void RIT_IRQHandler (void)
 	if(currentNote == (sizeof(song) / sizeof(song[0])))
 	{
 		disable_RIT();
+		enable_timer(0);
+		enable_timer(1);
 	}
+	
+	
   LPC_RIT->RICTRL |= 0x1;	/* clear interrupt flag */
 }
 /******************************************************************************

@@ -1,9 +1,9 @@
 #ifndef MUSIC_H
 #define MUSIC_H
 
-#define TIMERSCALER 1
+#define TIMERSCALER 2
 
-#define SECOND 0x2625A0 * TIMERSCALER
+#define SECOND 0x625A0 * TIMERSCALER
 
 
 typedef char BOOL;
@@ -14,7 +14,7 @@ typedef char BOOL;
     // In simulation mode, these values are adjusted to produce a "familiar" sound 
     // for the human ear when played through the buzzer. This ensures the sound 
     // resembles what it would sound like on the real hardware.
-    #define SPEEDUP        1.4f    // Increase the speed to adjust timing for simulation
+    #define SPEEDUP        1.6    // Increase the speed to adjust timing for simulation
     #define AMPLIFIER      2       // Amplify the sound for better simulation
 #else
     // Default values for real hardware playback
