@@ -198,7 +198,7 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
     if (ghost->previousValue == 2) {
 				drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
         drawIcon(current_x * 10, current_y * 10, pill, Magenta); // Ripristina la pillola
-    } else if (ghost->previousValue == 0) {
+    } else if (ghost->previousValue == 0 || ghost->previousValue == 4) {
         drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
     } else if (ghost->previousValue == 3) {
         drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
@@ -259,11 +259,11 @@ void moveGhost_fright(Ghost *ghost, PacMan *pacman, int screen[32][24], int frig
     }
 
     // Ripristina il valore della cella precedente
-    screen[current_y][current_x] = ghost->previousValue;
+    screen[current_y][current_x] = ghost->previousValue ;
     if (ghost->previousValue == 2) {
 				drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
         drawIcon(current_x * 10, current_y * 10, pill, Magenta); // Ripristina la pillola
-    } else if (ghost->previousValue == 0) {
+    } else if (ghost->previousValue == 0 || ghost->previousValue == 4) {
         //drawIcon(current_x * 10, current_y * 10, pill, Black); // Ripristina una cella vuota
 				drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
     } else if (ghost->previousValue == 3) {

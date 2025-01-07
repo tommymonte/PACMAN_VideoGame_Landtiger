@@ -1,9 +1,9 @@
 #ifndef MUSIC_H
 #define MUSIC_H
 
-#define TIMERSCALER 2
+#define TIMERSCALER 1
 
-#define SECOND 0x625A0 * TIMERSCALER
+#define SECOND 0x17D7840 * TIMERSCALER
 
 
 typedef char BOOL;
@@ -51,13 +51,16 @@ typedef enum frequencies
 	b3 = 2249,	// 247Hz	k=2249 b3
 	c4 = 2120,	// 262Hz	k=2120 c4
 	d4 = 1890,	// 294Hz	k=1890 d4
-	e4b = 1787,
+	e4b = 1786,
 	e4 = 1684,	// 330Hz	k=1684 e4
 	f4 = 1592,	// 349Hz	k=1592 f4
 	g4 = 1417,	// 392Hz	k=1417 g4
 	a4 = 1263,	// 440Hz	k=1263 a4
+	b4b = 1191,
 	b4 = 1125,	// 494Hz	k=1125 b4
 	c5 = 1062, 	// 523Hz	k=1062 c5
+	d5 = 946,
+	e5b = 893,
 	pause = 0		// DO NOT SOUND
 } FREQUENCY;
 

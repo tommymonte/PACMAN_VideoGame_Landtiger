@@ -30,9 +30,8 @@
 int totalPillsPlaced = 6;   // Contatore globale delle pills posizionate
 frightened_mode = 0;
 static int cnt = 60;               // Mantiene il conto del tempo di gioco
-
 void TIMER0_IRQHandler(void) {
-    
+    int spawn_cnt = 10;
     char buffer[10];                   // Buffer per il testo da stampare
 		static int delayCounter = 0;         // Contatore per il ritardo casuale
     static int randomDelay = 5;          // Valore del ritardo casuale
@@ -73,6 +72,7 @@ void TIMER0_IRQHandler(void) {
 						randomDelay--;
 					}
 				}
+				
     }
 
     // Ripulisce il flag di interruzione del Timer 0
@@ -105,6 +105,9 @@ volatile int press=0;
 volatile int press_1=0;
 volatile int press_2=0;
 extern int flag_music;
+
+int MAX_DELAY_GHOST = 5;
+int cnt_frightened = 80;
 
 void TIMER1_IRQHandler(void) {
 	    static int up = 0, down = 0, sx = 0, dx = 0;
@@ -185,6 +188,7 @@ void TIMER1_IRQHandler(void) {
                         score += 50; // Aumenta il punteggio speciale
 												cnt_score += 50;
 												frightened_mode = 1;
+												cnt_frightened = 90;
         } 
             
         // Aggiorna la posizione di Pac-Man in base alla direzione	
@@ -241,14 +245,16 @@ void TIMER1_IRQHandler(void) {
 				
 			// Controllo collisione tra Pac-Man e fantasma
             if (ghost.x == pacman.x && ghost.y == pacman.y) {
+								screen[ghost.x][ghost.y] = 0;
                 if (frightened_mode == 1) {  
                     // Pac-Man mangia il fantasma
                     drawIcon(ghost.x * 10, ghost.y * 10, ghost_matrix, Black);
-                    lives++;  // Incrementa le vite
+                    cnt_score += 100;
                     ghost.x = 12;  // Torna alla posizione iniziale
                     ghost.y = 16;
                     frightened_mode = 0;  // Esce dalla modalità frightened
                     ghost.previousValue = 0;
+										MAX_DELAY_GHOST = 25;
                 } else {  
 										delay_ghost = 0;
                     // Fantasma mangia Pac-Man
@@ -259,8 +265,9 @@ void TIMER1_IRQHandler(void) {
                     }
                 }
             }
-			while(delay_ghost == 3){
-				delay_ghost = 0;		
+			while(delay_ghost == MAX_DELAY_GHOST){
+				delay_ghost = 0;
+				MAX_DELAY_GHOST = 5;
 				if (frightened_mode == 0) {
 					moveGhost(&ghost, &pacman, screen);
 				} else {
@@ -269,6 +276,15 @@ void TIMER1_IRQHandler(void) {
 			}
 
 			delay_ghost++;
+			
+
+			if (frightened_mode == 1) {
+				cnt_frightened--;
+				if (cnt_frightened == 0){
+					frightened_mode = 0;
+					cnt_frightened = 80;
+				}
+			}
 			
 			// Cancella il flag di interruzione del Timer
 			LPC_TIM1->IR = 1;
