@@ -22,80 +22,27 @@ extern uint32_t result;
 extern CAN_msg       CAN_TxMsg;    /* CAN message for sending */
 extern CAN_msg       CAN_RxMsg;    /* CAN message for receiving */                                
 
-static int puntiRicevuti1 = 0;
-static int puntiInviati1 = 0;
 
-static int puntiRicevuti2 = 0;
-static int puntiInviati2 = 0;
-
-uint16_t val_RxCoordX = 0;            /* Locals used for display */
-uint16_t val_RxCoordY = 0;
 
 /*----------------------------------------------------------------------------
   CAN interrupt handler
  *----------------------------------------------------------------------------*/
-void CAN_IRQHandler (void)  {
-    uint16_t score;      // Variabile per il punteggio
-    uint8_t lives;        // Variabile per le vite
+void CAN_IRQHandler(void) {
+		icr = 0;
+    uint8_t icr;
 
-    /* check CAN controller 1 */
-    icr = 0;
-    icr = (LPC_CAN1->ICR | icr) & 0xFF;               /* clear interrupts */
+    // Check CAN2 interrupt
+    icr = (LPC_CAN2->ICR | icr) & 0xFF;
+    if (icr & (1 << 0)) {  // Message received on CAN2
+        CAN_msg CAN_RxMsg;
+        CAN_rdMsg(2, &CAN_RxMsg);
+        LPC_CAN2->CMR = (1 << 2);  // Release receive buffer
 
-    // Ricezione CAN Controller #1
-    if (icr & (1 << 0)) {                            /* Messaggio ricevuto */
-        CAN_rdMsg(1, &CAN_RxMsg);                    /* Leggi il messaggio */
-        LPC_CAN1->CMR = (1 << 2);                    /* Rilascia il buffer di ricezione */
+        // Decode the received message
+        uint16_t score = (CAN_RxMsg.data[0] << 8) | CAN_RxMsg.data[1];
+        uint8_t lives = CAN_RxMsg.data[2];
+        uint8_t countdown = CAN_RxMsg.data[3];
 
-        // Estrai punteggio (16 bit) e vite (8 bit)
-        score = (CAN_RxMsg.data[0] << 8) | CAN_RxMsg.data[1];  // Byte 0 e 1
-        lives = CAN_RxMsg.data[2];                              // Byte 2
-    }
-
-    // Trasmissione CAN Controller #1
-    if (icr & (1 << 1)) {                          /* Messaggio trasmesso */
-        // Esempio: trasmissione di punteggio e vite
-        CAN_TxMsg.id = 0x123;                      // Imposta un ID del messaggio
-        CAN_TxMsg.len = 3;                         // Lunghezza dei dati (punti 2 byte, vite 1 byte)
-        
-        // Inserisci punteggio e vite nel messaggio
-        CAN_TxMsg.data[0] = (score >> 8) & 0xFF;   // Byte alto del punteggio
-        CAN_TxMsg.data[1] = lives & 0xFF;          // Byte basso del punteggio
-        CAN_TxMsg.data[2] = lives;                  // Byte delle vite
-
-        CAN_wrMsg(1, &CAN_TxMsg);                  // Scrivi il messaggio sul bus CAN
-
-        puntiInviati1++;
-    }
-
-    /* check CAN controller 2 */
-    icr = 0;
-    icr = (LPC_CAN2->ICR | icr) & 0xFF;             /* clear interrupts */
-
-    // Ricezione CAN Controller #2
-    if (icr & (1 << 0)) {                           /* Messaggio ricevuto */
-        CAN_rdMsg(2, &CAN_RxMsg);                   /* Leggi il messaggio */
-        LPC_CAN2->CMR = (1 << 2);                   /* Rilascia il buffer di ricezione */
-
-        // Estrai punteggio (16 bit) e vite (8 bit)
-        score = (CAN_RxMsg.data[0] << 8) | CAN_RxMsg.data[1];  // Byte 0 e 1
-        lives = CAN_RxMsg.data[2];                              // Byte 2
-    }
-
-    // Trasmissione CAN Controller #2
-    if (icr & (1 << 1)) {                          /* Messaggio trasmesso */
-        // Esempio: trasmissione di punteggio e vite
-        CAN_TxMsg.id = 0x123;                      // Imposta un ID del messaggio
-        CAN_TxMsg.len = 3;                         // Lunghezza dei dati (punti 2 byte, vite 1 byte)
-        
-        // Inserisci punteggio e vite nel messaggio
-        CAN_TxMsg.data[0] = (score >> 8) & 0xFF;   // Byte alto del punteggio
-        CAN_TxMsg.data[1] = score & 0xFF;          // Byte basso del punteggio
-        CAN_TxMsg.data[2] = lives;                  // Byte delle vite
-
-        CAN_wrMsg(2, &CAN_TxMsg);                  // Scrivi il messaggio sul bus CAN
-
-        puntiInviati2++;
     }
 }
 

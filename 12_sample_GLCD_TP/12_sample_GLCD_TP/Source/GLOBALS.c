@@ -291,4 +291,20 @@ void moveGhost_fright(Ghost *ghost, PacMan *pacman, int screen[32][24], int frig
 		}
 }
 
+void sendGameStatus(uint16_t score, uint8_t lives, uint8_t countdown) {
+    CAN_msg CAN_TxMsg;
+
+    // Encode the message
+    CAN_TxMsg.id = 0x123;                         // Message ID
+    CAN_TxMsg.len = 4;                            // Data length (5 bytes)
+    CAN_TxMsg.data[0] = score & 0xFF;        // High byte of Score
+    CAN_TxMsg.data[1] = (score >> 8) & 0xFF;            // Low byte of Score
+    CAN_TxMsg.data[2] = lives;                    // Remaining Lives
+    CAN_TxMsg.data[3] = countdown ;
+		CAN_TxMsg.format=STANDARD_FORMAT;
+		CAN_TxMsg.type=DATA_FRAME;
+    // Transmit the message on CAN1
+    CAN_wrMsg(1, &CAN_TxMsg);
+}
+
 

@@ -76,7 +76,7 @@ void TIMER0_IRQHandler(void) {
 				}
 				
     }
-
+		sendGameStatus(score, lives, cnt);
     // Ripulisce il flag di interruzione del Timer 0
     LPC_TIM0->IR = 1;
     return;
@@ -122,6 +122,12 @@ void TIMER1_IRQHandler(void) {
 						switch(press){
 								case 2:
 										 game_pause = (game_pause == 0) ? 1 : 0;  // Se "pause" è 0, lo imposta a 1, altrimenti a 0
+											if (game_pause == 0) {
+												//disable_timer(1);
+											}
+											else {
+												//enable_timer(1);
+											}
 										break;
 								default:
 										break;
@@ -238,7 +244,7 @@ void TIMER1_IRQHandler(void) {
 					GUI_Text(0, 300, (uint8_t*)"CCCCCCCCC", Black, Black);  // Visualizza "PAUSE"	
 					cnt_score = 0;
 				}
-			} 
+			 
 				
 			if (countPills(screen) == 0){
 					game_pause = 3;
@@ -302,6 +308,7 @@ void TIMER1_IRQHandler(void) {
 				speedup_ghost = 200;
 				if (MAX_DELAY_GHOST > 0) MAX_DELAY_GHOST--;
 			}
+		}
 			
 			// Cancella il flag di interruzione del Timer
 			LPC_TIM1->IR = 1;

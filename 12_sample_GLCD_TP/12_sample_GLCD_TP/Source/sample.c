@@ -35,6 +35,7 @@ int main(void)
 	SystemInit();  												/* System Initialization (i.e., PLL)  */
 	BUTTON_init();
 	LED_init();
+	CAN_Init();
 	
 	init_RIT(0x004C4B40);
 	

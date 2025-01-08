@@ -7,6 +7,7 @@
 #include "GameFeatures/matrixGame.h"
 #include "joystick/joystick.h"
 #include "RIT/RIT.h"
+#include "CAN/CAN.h"
 
 // Dichiarazione della variabile globale direction
 extern int direction;
