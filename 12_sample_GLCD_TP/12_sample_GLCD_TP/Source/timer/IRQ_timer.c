@@ -45,6 +45,8 @@ void TIMER0_IRQHandler(void) {
 		} else if (game_pause == 2) {
 				sprintf(buffer, "GAME OVER");
         GUI_Text(0, 0, (uint8_t*)buffer, Red, Black);  // Visualizza "PAUSE"
+				drawIcon(pacman.x * 10, pacman.y * 10, pacMan, Black);
+				disable_timer(1);
 		} else if (game_pause == 3){
 			sprintf(buffer, "VICTORY!");
         GUI_Text(0, 0, (uint8_t*)buffer, Green, Black);  // Visualizza "PAUSE"
@@ -108,6 +110,7 @@ extern int flag_music;
 
 int MAX_DELAY_GHOST = 5;
 int cnt_frightened = 80;
+int speedup_ghost = 200;
 
 void TIMER1_IRQHandler(void) {
 	    static int up = 0, down = 0, sx = 0, dx = 0;
@@ -232,6 +235,7 @@ void TIMER1_IRQHandler(void) {
 				
         if (cnt_score == 1000) {
 					lives++;
+					GUI_Text(0, 300, (uint8_t*)"CCCCCCCCC", Black, Black);  // Visualizza "PAUSE"	
 					cnt_score = 0;
 				}
 			} 
@@ -240,7 +244,8 @@ void TIMER1_IRQHandler(void) {
 					game_pause = 3;
 				
 			}
-				
+			
+
 			printLife(lives);
 				
 			// Controllo collisione tra Pac-Man e fantasma
@@ -254,8 +259,11 @@ void TIMER1_IRQHandler(void) {
                     ghost.y = 16;
                     frightened_mode = 0;  // Esce dalla modalità frightened
                     ghost.previousValue = 0;
-										MAX_DELAY_GHOST = 25;
-                } else {  
+										// MAX_DELAY_GHOST = 25;
+                } else {
+										pacman.x = 12;
+										pacman.y = 18;
+										direction = NOP;
 										delay_ghost = 0;
                     // Fantasma mangia Pac-Man
                     drawIcon(pacman.x * 10, pacman.y * 10, pacMan, Black);
@@ -265,25 +273,34 @@ void TIMER1_IRQHandler(void) {
                     }
                 }
             }
+						
+			if (frightened_mode == 1) {
+				cnt_frightened--;
+				if (cnt_frightened == 0){
+					frightened_mode = 0;
+					cnt_frightened = 80;
+					MAX_DELAY_GHOST = 5; 
+					delay_ghost = MAX_DELAY_GHOST;
+				}
+			}
 			while(delay_ghost == MAX_DELAY_GHOST){
 				delay_ghost = 0;
-				MAX_DELAY_GHOST = 5;
+				
 				if (frightened_mode == 0) {
 					moveGhost(&ghost, &pacman, screen);
 				} else {
+					MAX_DELAY_GHOST = 10;
 					moveGhost_fright(&ghost, &pacman, screen, frightened_mode);
 				}
 			}
 
 			delay_ghost++;
 			
-
-			if (frightened_mode == 1) {
-				cnt_frightened--;
-				if (cnt_frightened == 0){
-					frightened_mode = 0;
-					cnt_frightened = 80;
-				}
+			if (speedup_ghost != 0) {
+				speedup_ghost--;
+			} else {
+				speedup_ghost = 200;
+				if (MAX_DELAY_GHOST > 0) MAX_DELAY_GHOST--;
 			}
 			
 			// Cancella il flag di interruzione del Timer

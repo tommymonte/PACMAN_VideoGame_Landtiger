@@ -38,28 +38,20 @@ int main(void)
 	
 	init_RIT(0x004C4B40);
 	
-
 	LCD_Initialization();
 	joystick_init();
 	LCD_Clear(Black);
-	
-	
 	
 	drawScreenFromMatrix(screen, pill, powerPill);
 	
 	init_timer(1, 0x2625A0); 						    /* 500us * 25MHz = 1.25*10^3 = 0x4E2 */
 	init_timer(0, 0x17D7840 ); 						    /* 8us * 25MHz = 200 ~= 0xC8 */
 
-	//enable_timer(0);
-	//enable_timer(1);
-
-
 	enable_RIT();
 	ADC_init();
 	LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
 	LPC_SC->PCON &= ~(0x2);						
-	
-			
+		
 	LPC_PINCON->PINSEL1 |= (1<<21);
 	LPC_PINCON->PINSEL1 &= ~(1<<20);
 	LPC_GPIO0->FIODIR |= (1<<26);

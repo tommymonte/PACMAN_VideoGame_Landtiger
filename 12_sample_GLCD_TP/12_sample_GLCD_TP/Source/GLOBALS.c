@@ -150,6 +150,11 @@ void life( int lives) {
 
 void printLife( int lives){
 	int x_life = 0;
+	for ( int j = 0; j<5; j++ ){
+					drawIcon(x_life*10, 300, heart, Black); 
+					x_life++;
+				}
+	x_life = 0;
 	for ( int i = 0; i<lives; i++ ){
 					drawIcon(x_life*10, 300, heart, Red); 
 					x_life++;
