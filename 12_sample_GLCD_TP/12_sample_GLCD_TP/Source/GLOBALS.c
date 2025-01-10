@@ -172,7 +172,15 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
     int current_y = ghost->y;
     int target_x = pacman->x;
     int target_y = pacman->y;
+	
+		// Definizione della zona centrale (es. casa dei fantasmi)
+    int central_min_x = 10, central_max_x = 13;
+    int central_min_y = 10, central_max_y = 13;
 
+    // Definizione delle coordinate della porta
+    int door_x1 = 11, door_y1 = 15;
+    int door_x2 = 12, door_y2 = 15;
+	
     // Calcola la distanza Manhattan nelle 4 direzioni
     int dx[] = {0, 0, -1, 1};  // Su, Giù, Sinistra, Destra
     int dy[] = {-1, 1, 0, 0};
@@ -180,8 +188,10 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
     int min_distance = 1000;  // Un valore grande per inizializzare
     int next_x = current_x;
     int next_y = current_y;
+		
 
-    // Controlla tutte le 4 direzioni possibili
+			
+			// Controlla tutte le 4 direzioni possibili
     for (int i = 0; i < 4; i++) {
         int new_x = current_x + dx[i];
         int new_y = current_y + dy[i];
@@ -197,6 +207,7 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
             }
         }
     }
+		
 
     // Ripristina il valore della cella precedente
     screen[current_y][current_x] = ghost->previousValue;

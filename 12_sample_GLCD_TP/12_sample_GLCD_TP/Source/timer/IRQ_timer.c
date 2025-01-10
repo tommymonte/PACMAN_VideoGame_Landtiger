@@ -51,7 +51,7 @@ void TIMER0_IRQHandler(void) {
 			sprintf(buffer, "VICTORY!");
         GUI_Text(0, 0, (uint8_t*)buffer, Green, Black);  // Visualizza "PAUSE"
 		} else {
-        sprintf(buffer, "Time: %d", cnt);
+        sprintf(buffer, "Time: %02d", cnt);
         GUI_Text(0, 0, (uint8_t*)buffer, Red, Black);  // Visualizza il tempo
     }
 
@@ -279,7 +279,17 @@ void TIMER1_IRQHandler(void) {
                     }
                 }
             }
-						
+		if (ghost.x == 12 && ghost.y == 14) {
+			screen[15][11] = 1;
+			screen[15][12] = 1;
+			drawSquare(11*10,15*10,Magenta);
+			drawSquare(12*10,15*10,Magenta);
+		} else if (ghost.x == 12 && ghost.y == 16){
+			screen[15][11] = 0;
+			screen[15][12] = 0;
+			drawSquare(11*10,15*10,Black);
+			drawSquare(12*10,15*10,Black);
+		}				
 			if (frightened_mode == 1) {
 				cnt_frightened--;
 				if (cnt_frightened == 0){
@@ -299,6 +309,7 @@ void TIMER1_IRQHandler(void) {
 					moveGhost_fright(&ghost, &pacman, screen, frightened_mode);
 				}
 			}
+			
 
 			delay_ghost++;
 			
