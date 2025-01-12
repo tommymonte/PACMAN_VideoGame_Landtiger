@@ -1,6 +1,6 @@
 #include "GLOBALS.h"
 #include <stdio.h>
-// Funzione per disegnare un quadrato pieno 5x5 usando linee orizzontali
+// Funzione per disegnare un quadrato pieno 10x10 usando linee orizzontali
 void drawSquare(int x, int y, uint16_t color) {
 	int i = 0;
   int size = 10; // Larghezza e altezza del quadrato
@@ -91,7 +91,7 @@ void distributePills(int score, int screen[32][24]) {
 		}
 	}
 
-// Funzione LFSR per la generazione pseudo-casuale
+// Funzione LFSR per la generazione pseudo-casuale (non utilizzata)
 uint8_t lfsr(uint8_t lfsr_register) {
     uint8_t feedback = (lfsr_register & 0x01) ^ ((lfsr_register >> 3) & 0x01);  // Polinomio x^4 + x + 1
     lfsr_register >>= 1;
@@ -102,7 +102,7 @@ uint8_t lfsr(uint8_t lfsr_register) {
 }
 
 
-// Funzione per contare il numero di 2 nella matrice
+// Funzione per contare il numero di 2 nella matrice ovvero quante pills
 int countPills(int screen[32][24]) {
     int count = 0;  // Variabile per contare i 2
     
@@ -161,11 +161,6 @@ void printLife( int lives){
 				}
 	x_life = 0;
 	}
-
-void initGame(void) {
-
-}
-
 
 void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
     int current_x = ghost->x;

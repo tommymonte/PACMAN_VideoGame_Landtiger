@@ -122,12 +122,6 @@ void TIMER1_IRQHandler(void) {
 						switch(press){
 								case 2:
 										 game_pause = (game_pause == 0) ? 1 : 0;  // Se "pause" è 0, lo imposta a 1, altrimenti a 0
-											if (game_pause == 0) {
-												//disable_timer(1);
-											}
-											else {
-												//enable_timer(1);
-											}
 										break;
 								default:
 										break;
@@ -221,7 +215,7 @@ void TIMER1_IRQHandler(void) {
                     prevPacman = currentPacman;	
 					          currentPacman = pacMan_sx;    
 								    pacman.x--;
-                } else if (pacman.x == 0 && pacman.y == 16) {
+                } else if (pacman.x == 0 && pacman.y == 16) { // gestione teleport
                     pacman.x = 23;
                 }
                 break;
@@ -230,7 +224,7 @@ void TIMER1_IRQHandler(void) {
                     prevPacman = currentPacman;	
 					          currentPacman = pacMan;    
 								    pacman.x++;
-                } else if (pacman.x == 23 && pacman.y == 16) {
+                } else if (pacman.x == 23 && pacman.y == 16) { // gestione teleport
                   pacman.x = 0;
                 }
                 break;
@@ -239,9 +233,10 @@ void TIMER1_IRQHandler(void) {
 				drawPacman();
 				printScore(score);
 				
-        if (cnt_score == 1000) {
+				// se cnt_score supera 1000 allora devo aggiungere una vita
+        if (cnt_score >= 1000) {
 					lives++;
-					GUI_Text(0, 300, (uint8_t*)"CCCCCCCCC", Black, Black);  // Visualizza "PAUSE"	
+					GUI_Text(0, 300, (uint8_t*)"CCCCCCCCC", Black, Black);  // per cancellare la scritta precedente
 					cnt_score = 0;
 				}
 			 
@@ -251,9 +246,9 @@ void TIMER1_IRQHandler(void) {
 				
 			}
 			
-
 			printLife(lives);
-				
+
+		/* NOTA: si commenta la parte successiva in quanto facente parte dell'extrapoint 2
 			// Controllo collisione tra Pac-Man e fantasma
             if (ghost.x == pacman.x && ghost.y == pacman.y) {
 								screen[ghost.x][ghost.y] = 0;
@@ -278,7 +273,8 @@ void TIMER1_IRQHandler(void) {
                         game_pause = 2;  // Fine del gioco
                     }
                 }
-            }
+            }*/
+		   /*
 		if (ghost.x == 12 && ghost.y == 14) {
 			screen[15][11] = 1;
 			screen[15][12] = 1;
@@ -319,6 +315,7 @@ void TIMER1_IRQHandler(void) {
 				speedup_ghost = 200;
 				if (MAX_DELAY_GHOST > 0) MAX_DELAY_GHOST--;
 			}
+			*/
 		}
 			
 			// Cancella il flag di interruzione del Timer

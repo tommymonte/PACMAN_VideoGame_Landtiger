@@ -25,7 +25,7 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 int direction  = NOP; // default
 
 PacMan pacman = {12, 10}; // Posizione iniziale di Pac-Man
-Ghost ghost = {12, 16};  // Posizione iniziale del fantasmino
+// Ghost ghost = {12, 16};  // Posizione iniziale del fantasmino
 int (*currentPacman)[10] = pacMan; // Inizializzato alla matrice per "destra"
 int (*prevPacman)[10] = pacMan;
 uint8_t lfsr_register = 0x01;
@@ -34,8 +34,8 @@ int main(void)
 {
 	SystemInit();  												/* System Initialization (i.e., PLL)  */
 	BUTTON_init();
-	LED_init();
-	CAN_Init();
+	// LED_init();
+	// CAN_Init();
 	
 	init_RIT(0x004C4B40);
 	
