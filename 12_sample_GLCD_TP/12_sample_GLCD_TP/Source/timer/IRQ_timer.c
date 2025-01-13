@@ -48,7 +48,7 @@ void TIMER0_IRQHandler(void) {
 				drawIcon(pacman.x * 10, pacman.y * 10, pacMan, Black);
 				disable_timer(1);
 		} else if (game_pause == 3){
-			sprintf(buffer, "VICTORY!");
+				sprintf(buffer, "VICTORY!");
         GUI_Text(0, 0, (uint8_t*)buffer, Green, Black);  // Visualizza "PAUSE"
 		} else {
         sprintf(buffer, "Time: %02d", cnt);
@@ -204,14 +204,14 @@ void TIMER1_IRQHandler(void) {
                 }
                 break;
             case DOWN:
-                if (pacman.y < 29 && (screen[pacman.y + 1][pacman.x] != 1 )){//|| screen[pacman.y + 1][pacman.x] == 2 || screen[pacman.y + 1][pacman.x] == 3)) {
+                if (pacman.y < 29 && (screen[pacman.y + 1][pacman.x] != 1)){//|| screen[pacman.y + 1][pacman.x] == 2 || screen[pacman.y + 1][pacman.x] == 3)) {
                     prevPacman = currentPacman;	
 					          currentPacman = pacMan_down;    
 								    pacman.y++;
                 }
                 break;
             case SX:
-                if (pacman.x > 0 && (screen[pacman.y][pacman.x - 1] != 1 )){ //|| screen[pacman.y][pacman.x - 1] == 2 || screen[pacman.y][pacman.x - 1] == 3)) {
+                if (pacman.x > 0 && (screen[pacman.y][pacman.x - 1] != 1)){ //|| screen[pacman.y][pacman.x - 1] == 2 || screen[pacman.y][pacman.x - 1] == 3)) {
                     prevPacman = currentPacman;	
 					          currentPacman = pacMan_sx;    
 								    pacman.x--;
@@ -220,7 +220,7 @@ void TIMER1_IRQHandler(void) {
                 }
                 break;
             case DX:
-                if (pacman.x < 23 && (screen[pacman.y][pacman.x + 1] != 1 )){// || screen[pacman.y][pacman.x + 1] == 2 || screen[pacman.y][pacman.x + 1] == 3)) {
+                if (pacman.x < 23 && (screen[pacman.y][pacman.x + 1] != 1)){// || screen[pacman.y][pacman.x + 1] == 2 || screen[pacman.y][pacman.x + 1] == 3)) {
                     prevPacman = currentPacman;	
 					          currentPacman = pacMan;    
 								    pacman.x++;
@@ -248,7 +248,6 @@ void TIMER1_IRQHandler(void) {
 			
 			printLife(lives);
 
-		/* NOTA: si commenta la parte successiva in quanto facente parte dell'extrapoint 2
 			// Controllo collisione tra Pac-Man e fantasma
             if (ghost.x == pacman.x && ghost.y == pacman.y) {
 								screen[ghost.x][ghost.y] = 0;
@@ -273,8 +272,8 @@ void TIMER1_IRQHandler(void) {
                         game_pause = 2;  // Fine del gioco
                     }
                 }
-            }*/
-		   /*
+            }
+
 		if (ghost.x == 12 && ghost.y == 14) {
 			screen[15][11] = 1;
 			screen[15][12] = 1;
@@ -315,7 +314,7 @@ void TIMER1_IRQHandler(void) {
 				speedup_ghost = 200;
 				if (MAX_DELAY_GHOST > 0) MAX_DELAY_GHOST--;
 			}
-			*/
+			
 		}
 			
 			// Cancella il flag di interruzione del Timer

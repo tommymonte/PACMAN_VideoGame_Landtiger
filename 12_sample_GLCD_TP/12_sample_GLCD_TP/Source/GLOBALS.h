@@ -66,6 +66,8 @@ typedef struct {
     int x;  // Posizione X nella matrice screen
     int y;  // Posizione Y nella matrice screen
 	  int previousValue; // Valore originale della cella (es. 0, 2, 3)
+		int prev_x;  // Nuovo campo per posizione precedente
+    int prev_y;  // Nuovo campo per posizione precedente
 } Ghost;
 
 extern Ghost ghost;

@@ -167,15 +167,15 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
     int current_y = ghost->y;
     int target_x = pacman->x;
     int target_y = pacman->y;
-	
-		// Definizione della zona centrale (es. casa dei fantasmi)
+
+    // Definizione della zona centrale (es. casa dei fantasmi)
     int central_min_x = 10, central_max_x = 13;
     int central_min_y = 10, central_max_y = 13;
 
     // Definizione delle coordinate della porta
     int door_x1 = 11, door_y1 = 15;
     int door_x2 = 12, door_y2 = 15;
-	
+
     // Calcola la distanza Manhattan nelle 4 direzioni
     int dx[] = {0, 0, -1, 1};  // Su, Giù, Sinistra, Destra
     int dy[] = {-1, 1, 0, 0};
@@ -183,16 +183,19 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
     int min_distance = 1000;  // Un valore grande per inizializzare
     int next_x = current_x;
     int next_y = current_y;
-		
 
-			
-			// Controlla tutte le 4 direzioni possibili
+    // Escludi il movimento inverso (ritorno alla posizione precedente)
+    int previous_x = ghost->prev_x;
+    int previous_y = ghost->prev_y;
+
+    // Controlla tutte le 4 direzioni possibili
     for (int i = 0; i < 4; i++) {
         int new_x = current_x + dx[i];
         int new_y = current_y + dy[i];
 
-        // Verifica che la nuova posizione sia valida (non oltre i limiti e non un muro)
-        if (new_x >= 0 && new_x < 32 && new_y >= 0 && new_y < 24 && screen[new_y][new_x] != 1) {
+        // Verifica che la nuova posizione sia valida (non oltre i limiti, non un muro, non la posizione precedente)
+        if (new_x >= 0 && new_x < 32 && new_y >= 0 && new_y < 24 &&
+            screen[new_y][new_x] != 1 && !(new_x == previous_x && new_y == previous_y)) {
             int distance = abs(target_x - new_x) + abs(target_y - new_y);  // Distanza Manhattan
 
             if (distance < min_distance) {
@@ -202,12 +205,11 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
             }
         }
     }
-		
 
     // Ripristina il valore della cella precedente
     screen[current_y][current_x] = ghost->previousValue;
     if (ghost->previousValue == 2) {
-				drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
+        drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
         drawIcon(current_x * 10, current_y * 10, pill, Magenta); // Ripristina la pillola
     } else if (ghost->previousValue == 0 || ghost->previousValue == 4) {
         drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
@@ -220,6 +222,8 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
     ghost->previousValue = screen[next_y][next_x];
 
     // Aggiorna la posizione del fantasmino sulla griglia
+    ghost->prev_x = current_x;  // Salva la posizione precedente
+    ghost->prev_y = current_y;  // Salva la posizione precedente
     ghost->x = next_x;
     ghost->y = next_y;
     screen[next_y][next_x] = 4;  // Assegna un valore specifico per il fantasmino
@@ -227,6 +231,7 @@ void moveGhost(Ghost *ghost, PacMan *pacman, int screen[32][24]) {
     // Disegna il fantasmino nella nuova posizione
     drawIcon(next_x * 10, next_y * 10, ghost_matrix, Red);
 }
+
 
 void moveGhost_fright(Ghost *ghost, PacMan *pacman, int screen[32][24], int frightened_mode) {
     int current_x = ghost->x;
@@ -242,13 +247,18 @@ void moveGhost_fright(Ghost *ghost, PacMan *pacman, int screen[32][24], int frig
     int next_x = current_x;
     int next_y = current_y;
 
+    // Escludi il movimento inverso (ritorno alla posizione precedente)
+    int previous_x = ghost->prev_x;
+    int previous_y = ghost->prev_y;
+
     // Controlla tutte le 4 direzioni possibili
     for (int i = 0; i < 4; i++) {
         int new_x = current_x + dx[i];
         int new_y = current_y + dy[i];
 
-        // Verifica che la nuova posizione sia valida (non oltre i limiti e non un muro)
-        if (new_x >= 0 && new_x < 32 && new_y >= 0 && new_y < 24 && screen[new_y][new_x] != 1) {
+        // Verifica che la nuova posizione sia valida (non oltre i limiti, non un muro, e non la posizione precedente)
+        if (new_x >= 0 && new_x < 32 && new_y >= 0 && new_y < 24 &&
+            screen[new_y][new_x] != 1 && !(new_x == previous_x && new_y == previous_y)) {
             int distance = abs(target_x - new_x) + abs(target_y - new_y); // Distanza Manhattan
 
             if (frightened_mode == 1) {
@@ -270,13 +280,12 @@ void moveGhost_fright(Ghost *ghost, PacMan *pacman, int screen[32][24], int frig
     }
 
     // Ripristina il valore della cella precedente
-    screen[current_y][current_x] = ghost->previousValue ;
+    screen[current_y][current_x] = ghost->previousValue;
     if (ghost->previousValue == 2) {
-				drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
+        drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
         drawIcon(current_x * 10, current_y * 10, pill, Magenta); // Ripristina la pillola
     } else if (ghost->previousValue == 0 || ghost->previousValue == 4) {
-        //drawIcon(current_x * 10, current_y * 10, pill, Black); // Ripristina una cella vuota
-				drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
+        drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
     } else if (ghost->previousValue == 3) {
         drawIcon(current_x * 10, current_y * 10, ghost_matrix, Black); // Ripristina una cella vuota
         drawIcon(current_x * 10, current_y * 10, powerPill, Magenta); // Ripristina la pillola
@@ -286,16 +295,20 @@ void moveGhost_fright(Ghost *ghost, PacMan *pacman, int screen[32][24], int frig
     ghost->previousValue = screen[next_y][next_x];
 
     // Aggiorna la posizione del fantasmino sulla griglia
+    ghost->prev_x = current_x;  // Salva la posizione precedente
+    ghost->prev_y = current_y;  // Salva la posizione precedente
     ghost->x = next_x;
     ghost->y = next_y;
     screen[next_y][next_x] = 4; // Assegna un valore specifico per il fantasmino
-		if (frightened_mode == 0) {
+
     // Disegna il fantasmino nella nuova posizione
-    drawIcon(next_x * 10, next_y * 10, ghost_matrix ,Red);
-		} else {
-			drawIcon(next_x * 10, next_y * 10, ghost_matrix, Blue2);
-		}
+    if (frightened_mode == 0) {
+        drawIcon(next_x * 10, next_y * 10, ghost_matrix, Red);
+    } else {
+        drawIcon(next_x * 10, next_y * 10, ghost_matrix, Blue2);
+    }
 }
+
 
 void sendGameStatus(uint16_t score, uint8_t lives, uint8_t countdown) {
     CAN_msg CAN_TxMsg;
