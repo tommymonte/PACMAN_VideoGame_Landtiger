@@ -112,6 +112,7 @@ int MAX_DELAY_GHOST = 5;
 int cnt_frightened = 80;
 int speedup_ghost = 200;
 
+int max_attemps_ghost = 0; 
 void TIMER1_IRQHandler(void) {
 	    static int up = 0, down = 0, sx = 0, dx = 0;
 	
@@ -192,6 +193,10 @@ void TIMER1_IRQHandler(void) {
 												cnt_score += 50;
 												frightened_mode = 1;
 												cnt_frightened = 90;
+												
+												// in modalità fright aggiorno le coordinate precedenti del ghost per evitare conflitti
+												ghost.prev_x = 0;
+												ghost.prev_y = 0;
         } 
             
         // Aggiorna la posizione di Pac-Man in base alla direzione	
@@ -248,7 +253,7 @@ void TIMER1_IRQHandler(void) {
 			
 			printLife(lives);
 
-			// Controllo collisione tra Pac-Man e fantasma
+						// Controllo collisione tra Pac-Man e fantasma in modalità frightened
             if (ghost.x == pacman.x && ghost.y == pacman.y) {
 								screen[ghost.x][ghost.y] = 0;
                 if (frightened_mode == 1) {  
@@ -258,9 +263,16 @@ void TIMER1_IRQHandler(void) {
                     ghost.x = 12;  // Torna alla posizione iniziale
                     ghost.y = 16;
                     frightened_mode = 0;  // Esce dalla modalità frightened
-                    ghost.previousValue = 0;
-										// MAX_DELAY_GHOST = 25;
-                } else {
+                    // ghost.previousValue = 0;
+										//MAX_DELAY_GHOST = 5;
+                } 
+            }
+						
+						// qui ho aggiunto un ulteriore check sulla posizione precedente poichè se pacman
+						// e il ghost si scambiano di posizione non entra in questo if e quindi non conta
+						// come pacman mangiato
+						
+						if ((ghost.prev_x == pacman.x && ghost.prev_y == pacman.y) || (ghost.x == pacman.x && ghost.y == pacman.y) && frightened_mode == 0){
 										pacman.x = 12;
 										pacman.y = 18;
 										direction = NOP;
@@ -268,12 +280,14 @@ void TIMER1_IRQHandler(void) {
                     // Fantasma mangia Pac-Man
                     drawIcon(pacman.x * 10, pacman.y * 10, pacMan, Black);
                     lives--;  // Decrementa le vite
+										cnt_score += 100;
                     if (lives == 0) {
                         game_pause = 2;  // Fine del gioco
                     }
-                }
-            }
+									}
 
+									
+		// controllo per chiudere la gabbia
 		if (ghost.x == 12 && ghost.y == 14) {
 			screen[15][11] = 1;
 			screen[15][12] = 1;
@@ -284,8 +298,10 @@ void TIMER1_IRQHandler(void) {
 			screen[15][12] = 0;
 			drawSquare(11*10,15*10,Black);
 			drawSquare(12*10,15*10,Black);
-		}				
-			if (frightened_mode == 1) {
+		}	
+			
+		// flag per contare fino a 10 per la modalità frightened
+		if (frightened_mode == 1) {
 				cnt_frightened--;
 				if (cnt_frightened == 0){
 					frightened_mode = 0;
@@ -293,7 +309,9 @@ void TIMER1_IRQHandler(void) {
 					MAX_DELAY_GHOST = 5; 
 					delay_ghost = MAX_DELAY_GHOST;
 				}
-			}
+		}
+			
+		// rallento il ghost rispetto a pacman
 			while(delay_ghost == MAX_DELAY_GHOST){
 				delay_ghost = 0;
 				
@@ -304,18 +322,19 @@ void TIMER1_IRQHandler(void) {
 					moveGhost_fright(&ghost, &pacman, screen, frightened_mode);
 				}
 			}
-			
-
 			delay_ghost++;
 			
+			// aumento la velocità del ghost andando a diminuire il max delay
 			if (speedup_ghost != 0) {
 				speedup_ghost--;
-			} else {
-				speedup_ghost = 200;
+			} 
+			else {
+				speedup_ghost = 100;
 				if (MAX_DELAY_GHOST > 0) MAX_DELAY_GHOST--;
 			}
-			
 		}
+			
+	
 			
 			// Cancella il flag di interruzione del Timer
 			LPC_TIM1->IR = 1;

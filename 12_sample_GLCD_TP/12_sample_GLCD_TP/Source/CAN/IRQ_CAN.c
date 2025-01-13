@@ -16,7 +16,7 @@
 #include <LPC17xx.h>                  /* LPC17xx definitions */
 #include "CAN.h"                      /* LPC17xx CAN adaption layer */
 #include "../GLCD/GLCD.h"
-
+#include "../GLOBALS.h"
 extern uint8_t icr ; 										//icr and result must be global in order to work with both real and simulated landtiger.
 extern uint32_t result;
 extern CAN_msg       CAN_TxMsg;    /* CAN message for sending */
@@ -42,6 +42,9 @@ void CAN_IRQHandler(void) {
         uint16_t score = (CAN_RxMsg.data[0] << 8) | CAN_RxMsg.data[1];
         uint8_t lives = CAN_RxMsg.data[2];
         uint8_t countdown = CAN_RxMsg.data[3];
+				
+				printScore(score);
+				printLife(lives);
 
     }
 }
