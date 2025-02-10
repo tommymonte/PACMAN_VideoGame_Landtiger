@@ -28,3 +28,9 @@ This project implements the classic Pac-Man game on the LandTiger board using fi
 - **Joystick Module & Buttons:** For user input.
 - **Additional Components:** Wires, connectors, and power supply as required.
 
+### Software
+
+- **C Compiler:** (e.g., GCC) for building the firmware if compiling via command line.
+- **KEIL IDE:** Used for compiling, debugging, and flashing the firmware onto the LandTiger board.
+- **Make Utility (Optional):** For projects that support a command line build process.
+- **Debugging Tools (Optional):** For troubleshooting firmware issues.
